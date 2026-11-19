@@ -1,0 +1,1890 @@
+<!DOCTYPE html>
+<html data-page-node-id="mhJYB82PTHljrXZAXVLZAH" lang="zh-CN"><head data-page-node-id="TcrX5Zba0fxQ55UJE8TqN2">
+<meta data-page-node-id="r9Jxwp43p5qg5w9RRDGqGF" charset="UTF-8">
+<meta data-page-node-id="IKXVUXbGAGx4MPnkAQ0I7a" name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-page-node-id="8PQm8mMRT5V21bnopDc5DP" data-pnid-children="FNcgBxAFn180KheU2EO0vG">点阵工坊 · 黑色图形转点阵图</title>
+<style data-page-node-id="NGNHS9ylAUr1tYpt2RtAYe" data-pnid-children="nYXYbUW1EkZuGGY8bCUjsG">
+:root{
+  --bg:#ffffff;--surface:#ffffff;
+  --ink:#111111;--ink2:#3a3a3a;--muted:#9a9a9a;--faint:#b9b9b9;
+  --line:#eeeeee;--line-strong:#dddddd;--soft:#fafafa;
+  --black:#111111;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;color:var(--ink);overflow-x:hidden;background:#ffffff;
+  font-family:"Inter","PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,-apple-system,sans-serif;
+  font-size:13px;-webkit-font-smoothing:antialiased;
+}
+button,select,input{font-family:inherit}
+button{cursor:pointer}
+
+/* ---------- decorative showcase bands are hidden in the minimal skin ---------- */
+.page-head,.page-foot,.head-art,.head-right{display:none!important}
+
+/* ---------- app shell + top bar ---------- */
+.app-shell{
+  width:100%;max-width:none;height:100vh;min-height:520px;margin:0;
+  background:#ffffff;border:0;border-radius:0;box-shadow:none;
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.topbar{
+  height:54px;flex:none;display:flex;align-items:center;gap:16px;padding:0 20px;
+  background:#ffffff;border-bottom:1px solid var(--line);
+}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.logo{
+  width:22px;height:22px;border-radius:0;flex:none;display:grid;place-items:center;
+  background:none;box-shadow:none;color:#111111;
+}
+.logo svg{width:20px;height:20px;fill:currentColor}
+.brand h1{font-size:14px;margin:0;font-weight:700;letter-spacing:.01em;line-height:1.25;color:#111}
+.brand h1 span{font-weight:400;color:#a6a6a6;font-size:10.5px;margin-left:7px;letter-spacing:.02em}
+.brand p{margin:2px 0 0;font-size:10.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top-status{display:none}
+.top-actions{display:flex;align-items:center;gap:8px;flex:none;margin-left:auto}
+.pill{
+  display:inline-flex;align-items:center;gap:6px;padding:0;background:none;border:0;border-radius:0;
+  color:#8c8c8c;font-size:10.5px;font-weight:400;margin-right:6px;
+}
+.pill i{width:6px;height:6px;border-radius:50%;background:#111;display:block}
+.icon-btn,.avatar{display:none}
+.btn{
+  border:1px solid var(--line-strong);background:#ffffff;color:#222;
+  height:32px;padding:0 12px;border-radius:5px;font-size:11.5px;font-weight:600;
+  display:inline-flex;align-items:center;gap:6px;transition:.14s;white-space:nowrap;box-shadow:none;
+}
+.btn:hover{border-color:#888;background:#fafafa;color:#000;transform:none}
+.btn:active{background:#f2f2f2}
+.btn.primary{background:#111111;border-color:#111111;color:#ffffff;box-shadow:none}
+.btn.primary:hover{background:#333333;border-color:#333333;color:#ffffff}
+.btn svg{width:13px;height:13px;stroke:currentColor}
+
+/* ---------- layout ---------- */
+.layout{flex:1;min-height:0;display:grid;grid-template-columns:320px minmax(0,1fr)}
+.panel{
+  background:#ffffff;border-right:1px solid var(--line);overflow-y:auto;
+  padding:26px 22px 32px;min-width:0;
+}
+.panel::-webkit-scrollbar{width:6px}
+.panel::-webkit-scrollbar-thumb{background:#e2e2e2;border-radius:6px}
+.section{
+  background:none;border:0;border-bottom:1px solid var(--line);border-radius:0;
+  padding:0 0 20px;margin:0 0 20px;box-shadow:none;
+}
+.section:last-of-type{border-bottom:1px solid var(--line)}
+.section-title{
+  display:flex;align-items:center;gap:8px;margin:0 0 16px;
+  font-size:13.5px;font-weight:700;color:#111111;letter-spacing:.01em;
+}
+.section-title em{
+  font-style:normal;font-size:11.5px;letter-spacing:.06em;color:#c4c4c4;background:none;
+  border:0;border-radius:0;padding:0;font-weight:600;margin-right:1px;
+}
+.section-title .spacer{flex:1}
+.link-btn{border:0;background:none;color:#888;font-size:12.5px;font-weight:400;padding:2px 0}
+.link-btn:hover{color:#111;text-decoration:underline}
+.tag-new{font-size:11px;font-weight:700;color:#a0a0a0;background:none;border:1px solid #e5e5e5;border-radius:3px;padding:2px 6px;letter-spacing:.06em}
+
+/* upload */
+.dropzone{
+  border:1px dashed #dcdcdc;border-radius:5px;background:#ffffff;
+  padding:24px 12px;text-align:center;transition:.14s;cursor:pointer;
+}
+.dropzone:hover,.dropzone.hover{border-color:#888;background:#fafafa}
+.dropzone svg{width:26px;height:26px;stroke:#b4b4b4;fill:none;display:block;margin:0 auto 9px;stroke-width:1.6}
+.dropzone strong{display:block;font-size:13.5px;font-weight:500;color:#555}
+.dropzone span{display:block;font-size:12px;color:#aaa;margin-top:6px}
+.file-row{
+  display:flex;align-items:center;gap:10px;margin-top:12px;background:#ffffff;
+  border:1px solid var(--line);border-radius:4px;padding:10px 12px;min-width:0;
+}
+.file-row svg{width:15px;height:15px;flex:none;stroke:#aaa;fill:none}
+.file-name{font-size:13px;font-weight:500;color:#333;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
+.file-meta{font-size:12px;color:#a5a5a5;flex:none;font-variant-numeric:tabular-nums}
+
+/* shapes */
+.shape-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
+.shape{
+  border:1px solid #e4e4e4;background:#ffffff;border-radius:4px;padding:12px 2px 9px;
+  display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11.5px;color:#9a9a9a;
+  transition:.14s;min-width:0;
+}
+.shape:hover{border-color:#999;transform:none}
+.shape.active{border-color:#111111;background:#111111;color:#ffffff;font-weight:600;box-shadow:none}
+.shape .ico{width:28px;height:28px;display:grid;place-items:center}
+.shape .ico svg{width:25px;height:25px;fill:#4a4a4a}
+.shape.active .ico svg{fill:#ffffff}
+.shape .ico svg.line{fill:none;stroke:#4a4a4a;stroke-width:2}
+.shape.active .ico svg.line{stroke:#ffffff}
+.custom-box{
+  display:flex;align-items:center;gap:9px;margin-top:14px;padding:10px;
+  border:1px solid var(--line);border-radius:4px;background:#ffffff;
+}
+.custom-thumb{
+  width:48px;height:48px;flex:none;border-radius:3px;border:1px solid #e9e9e9;
+  background:#ffffff;display:grid;place-items:center;overflow:hidden;
+}
+.custom-thumb canvas{width:100%;height:100%;object-fit:contain;display:block}
+.custom-txt{flex:1;min-width:0}
+.custom-txt strong{display:block;font-size:13px;font-weight:600;color:#333}
+.custom-txt span{display:block;font-size:12px;color:#a2a2a2;margin:4px 0 8px;line-height:1.45}
+.mini-btn{
+  border:1px solid #dedede;background:#ffffff;border-radius:4px;
+  font-size:12px;font-weight:500;padding:7px 12px;color:#444;
+}
+.mini-btn:hover{border-color:#888;background:#fafafa;color:#111}
+.custom-txt .mini-btn{padding:6px 8px;white-space:nowrap}
+
+/* sliders */
+.slider-row{margin-bottom:20px;transition:opacity .18s}
+.slider-row:last-child{margin-bottom:2px}
+.slider-row.dim{opacity:.38}
+.slider-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;gap:8px}
+.slider-head label{font-size:13px;font-weight:500;color:#3d3d3d}
+.slider-head output{font-size:12.5px;font-weight:500;color:#8c8c8c;font-variant-numeric:tabular-nums}
+input[type=range]{
+  -webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:4px;
+  background:linear-gradient(to right,#111111 var(--p,50%),#e6e6e6 var(--p,50%));
+  outline:none;display:block;margin:0;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:#111111;
+  border:0;box-shadow:none;cursor:pointer;
+}
+input[type=range]::-moz-range-thumb{
+  width:15px;height:15px;border-radius:50%;background:#111111;border:0;
+  box-shadow:none;cursor:pointer;
+}
+.range-ends{display:flex;justify-content:space-between;font-size:11.5px;color:#bcbcbc;margin-top:7px}
+.switch-row{
+  display:flex;align-items:center;gap:12px;margin:0 0 20px;padding:0;
+  background:none;border:0;border-radius:0;transition:.18s;
+}
+.switch-row.on{background:none;border-color:transparent}
+.switch-row .txt{flex:1;min-width:0}
+.switch-row strong{display:block;font-size:13px;font-weight:600;color:#333}
+.switch-row .hint{display:block;font-size:12px;color:#a2a2a2;margin-top:4px;line-height:1.5}
+.switch{position:relative;width:38px;height:22px;flex:none;cursor:pointer}
+.switch input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer;z-index:2}
+.switch .track{position:absolute;inset:0;background:#dcdcdc;border-radius:999px}
+.switch .track::after{
+  content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;
+  background:#ffffff;box-shadow:none;
+}
+.switch input:checked + .track{background:#111111}
+.switch input:checked + .track::after{transform:translateX(16px)}
+.switch-row.on .switch .track{background:#111111}
+.switch-row.on .switch .track::after{transform:translateX(16px)}
+.retro-extra{display:none;padding:2px 0 0}
+.retro-extra.show{display:block}
+.mini-note{
+  font-size:12px;color:#9d9d9d;line-height:1.6;margin:10px 0 0;padding:0;
+  background:none;border-radius:0;
+}
+
+/* batch */
+.batch-count{font-size:12px;color:#999;font-weight:400}
+.batch-list{
+  max-height:150px;overflow-y:auto;border:1px solid var(--line);border-radius:4px;
+  background:#ffffff;padding:5px;margin:12px 0;
+}
+.batch-list::-webkit-scrollbar{width:5px}
+.batch-list::-webkit-scrollbar-thumb{background:#e2e2e2;border-radius:5px}
+.batch-item{display:flex;align-items:center;gap:4px}
+.batch-name{
+  flex:1;min-width:0;text-align:left;border:0;background:none;font-size:12.5px;color:#4a4a4a;
+  padding:7px 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-radius:3px;
+}
+.batch-name:hover{background:#f4f4f4;color:#111}
+.batch-del{border:0;background:none;color:#b5b5b5;font-size:17px;padding:2px 7px;line-height:1}
+.batch-del:hover{color:#111}
+.batch-empty{display:block;font-size:12px;color:#aaa;padding:10px 8px;line-height:1.5}
+.batch-opts{display:flex;gap:18px;align-items:center;font-size:12.5px;margin:2px 0 14px;color:#555}
+.batch-opts label{display:flex;align-items:center;gap:6px;cursor:pointer}
+.batch-opts input{accent-color:#111;margin:0;width:15px;height:15px}
+.batch-note{font-size:12px;color:#9d9d9d;line-height:1.6;margin:10px 0 0}
+#btnBatchZip{width:100%;justify-content:center;height:38px;font-size:13.5px}
+#btnBatchZip:disabled{opacity:.4;cursor:not-allowed;transform:none}
+
+/* selects */
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field label{display:block;font-size:12px;color:#9a9a9a;margin-bottom:7px;font-weight:400}
+select{
+  width:100%;height:38px;border:1px solid var(--line-strong);border-radius:4px;
+  background:#ffffff;padding:0 10px;font-size:13px;color:#333;outline:none;
+}
+select:focus{border-color:#111}
+.field.full{grid-column:1/-1}
+
+/* stats */
+.stats{margin-top:0;background:none;border:0;border-top:1px solid var(--line);border-radius:0;padding:18px 0 0}
+.stats-head{display:flex;align-items:center;gap:9px;margin-bottom:14px}
+.stats-ico{
+  width:22px;height:22px;border-radius:0;background:none;display:grid;place-items:center;
+  color:#111;box-shadow:none;
+}
+.stats-ico svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.7}
+.stats-head strong{display:block;font-size:13px;font-weight:600;color:#333}
+.stats-head span{display:block;font-size:11.5px;color:#aaa;margin-top:2px}
+.stats-head .live{margin-left:auto;width:6px;height:6px;border-radius:50%;background:#111;box-shadow:none}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.stat{background:none;border:0;border-radius:0;padding:0;box-shadow:none}
+.stat b{display:block;font-size:17px;font-weight:600;color:#111;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.stat span{font-size:11.5px;color:#a5a5a5}
+
+/* ---------- stage ---------- */
+.stage{position:relative;display:flex;flex-direction:column;min-width:0;min-height:0;background:#ffffff}
+.stage-bar{
+  height:44px;flex:none;display:flex;align-items:center;gap:12px;padding:0 18px;
+  background:#ffffff;border-bottom:1px solid var(--line);font-size:10.5px;
+}
+.chip-live{display:inline-flex;align-items:center;gap:7px;background:none;color:#555;border-radius:0;padding:0;font-weight:500}
+.stage-bar .dot-live{width:6px;height:6px;border-radius:50%;background:#111;box-shadow:none}
+.stage-bar .t-muted{color:#9a9a9a}
+.stage-bar .sep{width:1px;height:12px;background:var(--line)}
+.stage-bar .grow{flex:1}
+.stage-tag{display:none}
+.zoom-ctrl{
+  position:absolute;right:16px;top:58px;z-index:6;
+  display:inline-flex;align-items:center;flex:none;border:1px solid #e8e8e8;border-radius:5px;
+  overflow:hidden;background:#ffffff;height:28px;box-shadow:0 2px 8px rgba(0,0,0,.05);
+}
+.zoom-ctrl button{
+  border:0;background:#ffffff;color:#4a4a4a;width:26px;height:26px;line-height:1;font-size:14px;font-weight:500;
+  display:grid;place-items:center;padding:0;
+}
+.zoom-ctrl button:hover{background:#f4f4f4;color:#111}
+.zoom-ctrl .zoom-label{
+  min-width:46px;text-align:center;font-size:10px;font-weight:500;color:#444;
+  font-variant-numeric:tabular-nums;border-left:1px solid var(--line);border-right:1px solid var(--line);
+  padding:0 6px;line-height:26px;
+}
+.zoom-ctrl .zoom-fit{font-size:10px;font-weight:500;width:auto;padding:0 9px;border-left:1px solid var(--line)}
+.canvas-wrap{
+  flex:1;min-height:0;overflow:hidden;padding:28px;
+  display:flex;align-items:center;justify-content:center;position:relative;
+  touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;
+  background:#fafafa;
+}
+.canvas-wrap.dragging{cursor:grabbing}
+.paper{
+  background:#ffffff;line-height:0;max-width:100%;position:relative;border-radius:2px;overflow:hidden;
+  box-shadow:none;border:1px solid #ededed;transform-origin:center center;will-change:transform;
+}
+.paper.transparent{
+  background-color:#ffffff;
+  background-image:linear-gradient(45deg,#f1f1f1 25%,transparent 25%,transparent 75%,#f1f1f1 75%),
+                   linear-gradient(45deg,#f1f1f1 25%,transparent 25%,transparent 75%,#f1f1f1 75%);
+  background-size:16px 16px;background-position:0 0,8px 8px;
+}
+.paper canvas{display:block;max-width:100%;height:auto}
+.drop-overlay{
+  position:absolute;inset:14px;border:1px dashed #999;border-radius:4px;
+  background:rgba(255,255,255,.94);color:#111;display:none;place-items:center;
+  font-size:13px;font-weight:500;z-index:10;pointer-events:none;
+}
+.canvas-wrap.dragover .drop-overlay{display:grid}
+.stage-foot{
+  position:absolute;left:50%;bottom:16px;transform:translateX(-50%);z-index:6;
+  display:flex;align-items:center;justify-content:center;gap:0;
+  border:0;background:none;min-height:0;padding:0;color:#8c8c8c;font-size:10px;
+}
+.stage-foot span{display:none}
+.stage-foot span.tip-zoom{
+  display:inline-flex;align-items:center;gap:6px;background:rgba(58,58,58,.86);color:#ffffff;
+  border-radius:999px;padding:7px 14px;font-size:10px;white-space:nowrap;
+}
+.stage-foot svg{width:12px;height:12px;stroke:#ffffff;fill:none;stroke-width:1.9}
+.stage-foot kbd{border:0;padding:0;font-family:inherit;font-size:10px;color:#fff;background:none}
+.toast{
+  position:fixed;left:50%;bottom:24px;transform:translate(-50%,14px);
+  background:#111111;color:#ffffff;padding:10px 16px;border-radius:5px;font-size:11.5px;
+  box-shadow:0 6px 20px rgba(0,0,0,.16);opacity:0;pointer-events:none;
+  transition:.2s;z-index:60;white-space:nowrap;
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+@media (max-width:1200px){
+  .pill{display:none}
+}
+@media (max-width:980px){
+  .app-shell{height:auto;min-height:0;overflow:visible}
+  .layout{display:flex;flex-direction:column;grid-template-columns:1fr}
+  .stage{order:-1;height:clamp(300px,48vh,460px);min-height:0;min-width:0;width:100%;overflow:hidden;border-bottom:1px solid var(--line)}
+  .panel{order:1;min-width:0;width:100%;border-right:0;border-bottom:0;overflow:visible;padding:20px 18px 28px}
+  .topbar{height:auto;min-height:54px;padding:10px 14px;flex-wrap:wrap;gap:10px}
+  .brand p{display:none}
+  .stage-bar{padding:0 12px;gap:9px;overflow:hidden}
+  .stage-bar .grow,.stage-bar .sep{display:none}
+  .stage-bar .t-muted{flex:1 1 0;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .chip-live{flex:none}
+  .zoom-ctrl{position:absolute;right:12px;top:52px;transform:none}
+  .stage-foot{bottom:12px}
+}
+@media (max-width:560px){
+  .brand h1 span{display:none}
+  .top-actions{width:100%;gap:8px}
+  .top-actions .btn{flex:1;justify-content:center;padding:0 8px;font-size:11px}
+  .canvas-wrap{padding:14px}
+  .stage{height:clamp(280px,44vh,400px)}
+  .stage-foot span.tip-zoom{font-size:9px;padding:6px 10px;max-width:calc(100vw - 40px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .zoom-ctrl{right:10px;top:50px;height:26px}
+  .zoom-ctrl button{width:24px;height:24px}
+  .zoom-ctrl .zoom-label{min-width:40px;line-height:24px}
+  .zoom-ctrl .zoom-fit{padding:0 7px}
+}
+</style>
+</head>
+<body data-page-node-id="OY8kAo0iXvgRIwAi7EHNDI">
+<div data-page-node-id="ny1jyRObqfVk4rw62lFsuq" class="page-head">
+  <div data-page-node-id="HRQFHbKK3lPtp5CBHJImaL" class="head-art" aria-hidden="true">
+    <svg data-page-node-id="1lDsUGlRQzciD5uhtN9RoU" viewBox="0 0 650 154" preserveAspectRatio="none">
+      <defs data-page-node-id="A6FX1M6cwbZ3fokBlBlBFH">
+        <linearGradient data-page-node-id="0LMwsiluN4yAEBFE7IsdSn" id="hg1" x1="0" y1="0" x2="0" y2="1">
+          <stop data-page-node-id="FyjfvGFGrxPAdwGLIDtJjJ" offset="0" stop-color="#b9d0ff" stop-opacity=".9"></stop>
+          <stop data-page-node-id="O9EgG6AM5HxURcehBCe2pD" offset="1" stop-color="#e6efff" stop-opacity=".12"></stop>
+        </linearGradient>
+      </defs>
+      <path data-page-node-id="MllVmI4vhHs81Z395friZ1" d="M120 154C205 78 252 66 312 92c60 26 92-62 158-38 52 19 96 58 180 100Z" fill="url(#hg1)"></path>
+      <path data-page-node-id="R0QUNQJStgxBZEyhF7mJ5F" d="M256 154c78-58 128-40 178-66 50-26 92 2 216 66Z" fill="#d5e4ff" opacity=".6"></path>
+    </svg>
+  </div>
+  <div data-page-node-id="d4UTtFJODWBLmII7J8HL1J" class="head-inner">
+    <div data-page-node-id="mhakxhIdmwVFtjKgHmuHyi" class="head-left">
+      <span data-page-node-id="NYP5ai4D5vTAehONJIECcD" class="head-badge"><b data-page-node-id="kMWcapAz9nUqmwziY0fIIx">01</b> 创意工具 · CREATIVE TOOL</span>
+      <h1 data-page-node-id="eNIpn7ViAYROIovOVV1vgp" class="head-title">点阵工坊 <span data-page-node-id="hqOiPHXqg84Tdw2FCt1kIj">Dot Matrix Studio</span></h1>
+      <p data-page-node-id="24o1viRN2kXnfGA0dDjeA4" class="head-sub"><i data-page-node-id="eU3DEZ3pqFsobRWiUX5bj4"></i>上传黑色图形 · 实时生成点阵 · 一键导出 PNG / SVG</p>
+    </div>
+    <div data-page-node-id="WEZ16gXBDIizhJznCVYGb8" class="head-right">
+      <p data-page-node-id="PkkLS3xLHqBgyVi6KXE3z4">高效 · 专业 · 可持续</p>
+      <p data-page-node-id="YdbiwD6eqIvkuYhHaTAieS">为设计提供更好的数字化工具</p>
+      <div data-page-node-id="kAreIgEnRTG8WkoV30juNX" class="head-sign">让好设计<br data-page-node-id="QE5pVWQGJ5E0RnYsIoLxNS">更快落地<svg data-page-node-id="oixnr5VDT3qnOVymGhZuw6" viewBox="0 0 80 18"><path data-page-node-id="A0vNlTFJEtAOCz8WoJCnU6" d="M2 14C22 3 48 18 78 4" stroke="#111111" stroke-width="2.4" fill="none" stroke-linecap="round"></path></svg></div>
+    </div>
+  </div>
+</div>
+
+<div data-page-node-id="wrD7OHOuSultthAmXd5f2F" class="app-shell">
+<header data-page-node-id="93X37KcQel33XkrBbMBsoD" class="topbar">
+  <div data-page-node-id="rvf0WEajlzurJYUWs7r7T1" class="brand">
+    <div data-page-node-id="hkea6gVCfjYEyAAvLhGHFt" class="logo">
+      <svg data-page-node-id="xDRDDRAntEpM6BCpZIsIoO" viewBox="0 0 24 24" fill="currentColor"><circle data-page-node-id="QxvERExgHglhaNXvT15Avg" cx="5" cy="5" r="1.9"></circle><circle data-page-node-id="r7G8FjCWxIsf2SOsVENHJ5" cx="12" cy="5" r="1.4"></circle><circle data-page-node-id="lrh2g0GEebmW1g3AHt0gJr" cx="19" cy="5" r="1"></circle><circle data-page-node-id="eVCmmKJ3mQJCi33SUzzNp5" cx="5" cy="12" r="1.6"></circle><circle data-page-node-id="SRvhzS05gRDrdYD41VEsSZ" cx="12" cy="12" r="2.1"></circle><circle data-page-node-id="Lcvic32G6edBpDVZREuB2c" cx="19" cy="12" r="1.3"></circle><circle data-page-node-id="lzuGoU6KCYsDLEFDtos152" cx="5" cy="19" r="1"></circle><circle data-page-node-id="mqbJATd5rgzdQ0iRXzVjoi" cx="12" cy="19" r="1.5"></circle><circle data-page-node-id="eLJPaA2F9LQlaurGPn76br" cx="19" cy="19" r="1.9" style="font-size:20px;font-style:normal;font-weight:700"></circle></svg>
+    </div>
+    <div data-page-node-id="jGFZzojiaosqCwOCJzbjI4">
+      <h1 data-page-node-id="D7H3OjAxjFKDdMi8QeLI5M" style="font-size:20px">点阵工坊 <span data-page-node-id="DUlRK7vRGuVsXLhzGZG9y5">Dot Matrix Studio</span></h1>
+      
+    </div>
+  </div>
+  <div data-page-node-id="CY1mXbhSOoh0oyMA5rIXRm" class="top-status">
+    <svg data-page-node-id="T4u2koqczuqxgUkv8Hsm2A" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><circle data-page-node-id="asyBzZpJa7mxtcjNvDQpyZ" cx="11" cy="11" r="7"></circle><path data-page-node-id="kGVPAdTmxb2HrC0dsBqMid" d="m20 20-3.5-3.5"></path></svg>
+    所有图片仅在本地浏览器处理，不会上传服务器
+  </div>
+  <div data-page-node-id="A9hrEEGPdKAvqWisDYUV9x" class="top-actions">
+    
+    <button data-page-node-id="VcZ7qazeVOVOCXI9Wog7NP" class="icon-btn" id="btnTip" title="隐私说明">
+      <svg data-page-node-id="Mlkc7Ejodt3bVAWcQX5kuG" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path data-page-node-id="g6nfGQlLxEJ1r7tnBjKFLI" d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"></path></svg>
+    </button>
+    <span data-page-node-id="bGdjKrGFHMGzNv4lNYNzSL" class="avatar" title="本地工作区">DM</span>
+    <button data-page-node-id="EOIu58rIcTxqqQSR2ahvfA" class="btn" id="btnSvg" title="下载矢量 SVG"><svg data-page-node-id="0KUauSxYeBEyYA2xNwbFFP" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path data-page-node-id="3JFsxMkB1ceHbEsrCDKBz3" d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v3h16v-3"></path></svg>下载 SVG</button>
+    <button data-page-node-id="4EbJgX5wCsNNQxbcv8drbJ" class="btn primary" id="btnPng" title="下载高清 PNG"><svg data-page-node-id="ztFSBM8JS6Gn7BMpbje5dB" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path data-page-node-id="lYJQbzLgO5RxD3sGvCePfZ" d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v3h16v-3"></path></svg>下载 PNG</button>
+  </div>
+</header>
+
+<main data-page-node-id="CAmsDfdF2zDRoUVtY6iMGR" class="layout">
+  <aside data-page-node-id="yXOw51pYESELkzT57nclNr" class="panel">
+
+    <section data-page-node-id="8MPHQCTJ6FU99myi4b2Eo2" class="section">
+      <h2 data-page-node-id="pzxoqzDq82UnQoqaT1AU9I" class="section-title"><em data-page-node-id="ZoerNfjDfroVALMK664EPF">01</em> 源图片 <span data-page-node-id="L4NGLqtXIavsHjNAlfR1ok" class="spacer"></span><button data-page-node-id="Eln3RSRDyxocPrPH190rBX" class="link-btn" id="btnDemo">载入示例</button></h2>
+      <div data-page-node-id="iCMuQGueBk8ulddVvpjEdp" class="dropzone" id="dropMain">
+        <svg data-page-node-id="jtWFH3v8iQcZfMw0QvqYmK" viewBox="0 0 24 24" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path data-page-node-id="rzobONcwRIuUO0HrcfEXhy" d="M12 16V4m0 0L8 8m4-4 4 4M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"></path></svg>
+        <strong data-page-node-id="RsuTb6FNkOsiAeMEnhS2eU">点击或拖拽上传黑色图形</strong>
+        <span data-page-node-id="4Aaeos6CzRzl2ab9oaMVkP">支持 PNG / JPG / WEBP / SVG / BMP / GIF</span>
+      </div>
+      <input data-page-node-id="cjbrB0HaG653UoAyaNxMPL" type="file" id="fileMain" accept="image/*" hidden="">
+      <div data-page-node-id="5BLQmclfGOyjMK9IIGx7So" class="file-row">
+        <svg data-page-node-id="3w4VbF2agIJtzCLSaWT8wC" viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect data-page-node-id="pvwEZiY7oj9wTH7hq2Sg3E" x="3" y="3" width="18" height="18" rx="2"></rect><circle data-page-node-id="XDpj5FUreHOFKXQC3oja8O" cx="8.5" cy="8.5" r="1.5"></circle><path data-page-node-id="WBwvAbcbsrESweHnKCE61Z" d="m21 15-5-5L5 21"></path></svg>
+        <span data-page-node-id="RIXu8cT1c4C82nCjVFOqE8" class="file-name" id="srcName">示例图形.png</span>
+        <span data-page-node-id="BPkPrAOtAfQqOgozbupgHz" class="file-meta" id="srcSize" style="font-size:12px">960 × 640</span>
+      </div>
+    </section>
+
+    <section data-page-node-id="wAae1x2ZBotjoWEhnDB0KU" class="section">
+      <h2 data-page-node-id="vBV6fHDfLcdHdFPKGPAQCq" class="section-title"><em data-page-node-id="VsFiDYfZeBsq8LtaQML0oo">02</em> 点形状</h2>
+      <div data-page-node-id="iwQ1mj9yVjd1Jnz47J0dHi" class="shape-grid" id="shapeGrid">
+        <button data-page-node-id="3A4cR0DZkpzKQHvlQTqnc3" class="shape active" data-shape="circle" title="圆形点">
+          <span data-page-node-id="xpVpcNYQfU8Z519YOslglS" class="ico"><svg data-page-node-id="y3FzB86rbDaMSFhby1ij1E" viewBox="0 0 28 28" style="font-size:14px"><circle data-page-node-id="JDPxc4i7FYH62q0C6uA4iP" cx="14" cy="14" r="10"></circle></svg></span><span data-page-node-id="LjBh6oVZHIp7SzN01BZ92q">圆形</span>
+        </button>
+        <button data-page-node-id="LBmXHNQG8sEDhGH0DPjQNN" class="shape" data-shape="square" title="方形点">
+          <span data-page-node-id="c0dSGTMo2BPVI5U2AAn3JC" class="ico"><svg data-page-node-id="5Fr0UIwUKHD24JlIYX7OW9" viewBox="0 0 28 28" style="font-size:14px"><rect data-page-node-id="qBR3bmLWSAFWBkCJ9fyfCG" x="4" y="4" width="20" height="20" rx="1"></rect></svg></span><span data-page-node-id="TWRP6ZJiv7fTIEL01kVJpm">方形</span>
+        </button>
+        <button data-page-node-id="KBphwWQgvefJMgZp9gvohM" class="shape" data-shape="diamond" title="菱形点">
+          <span data-page-node-id="ICNrGLHYXBcya84H1mw7hz" class="ico"><svg data-page-node-id="af0nNHGZn8UkPGVaE1ihLG" viewBox="0 0 28 28" style="font-size:14px"><path data-page-node-id="5s3Yi5St92WAZfvUlS0mMj" d="M14 2 26 14 14 26 2 14Z"></path></svg></span><span data-page-node-id="vPf28zleB6xHcgBXNwrs8N">菱形</span>
+        </button>
+        <button data-page-node-id="ao7UkTBMeCc5TfJJg7GY3T" class="shape" data-shape="cross" title="45 度交叉线点阵">
+          <span data-page-node-id="Qqi3M23VIpRofjTrF4Fnh4" class="ico"><svg data-page-node-id="XlwDWQ8pJRdY4WFFvFcGJt" class="line" viewBox="0 0 28 28" style="font-size:14px"><path data-page-node-id="BmUCAsIzISaTnXUz8gvbKA" d="M5 5 23 23M23 5 5 23"></path></svg></span><span data-page-node-id="Dc9JjVABGoLdwSnBI9Oerf">交叉线</span>
+        </button>
+        <button data-page-node-id="GdGHuYDnnbyxyCp7yolEYt" class="shape" data-shape="custom" title="自定义点阵图形">
+          <span data-page-node-id="tMLShz3teEBgfk441lVk8X" class="ico"><svg data-page-node-id="ucuepY8lG92JOv6Z87oFWW" viewBox="0 0 28 28" style="font-size:14px"><path data-page-node-id="3PofjQGd5PmCrIb373pX7X" d="m14 3 2.7 6.2 6.8.6-5.1 4.5 1.5 6.6L14 17.4 8.1 20.9l1.5-6.6L4.5 9.8l6.8-.6L14 3Z"></path></svg></span><span data-page-node-id="0PqeaUDiCBcYVz7SWeUJKj">自定义</span>
+        </button>
+      </div>
+      <div data-page-node-id="kyLJMKS58JTU5K2dyG9LgA" class="custom-box">
+        <div data-page-node-id="bJwHr1U9Xwol0sC5K7w5H2" class="custom-thumb" id="customThumb" style="font-size:14px"></div>
+        <div data-page-node-id="PRF3jUAYF2AjY8bT6gEH8a" class="custom-txt" style="font-size:13px">
+          <strong data-page-node-id="sC2tneKMesFpA2phVncROP" style="font-size:13px">自定义点阵图形</strong>
+          <span data-page-node-id="ApaU9Wr9c91pu1KzuhAW8x" style="font-size:12px">上传黑白图形，作为每个点的形状</span>
+          <button data-page-node-id="GDHAt1EiRK5i4m1a8OlZA5" class="mini-btn" id="btnUploadStamp">＋ 上传点阵图形</button>
+          <button data-page-node-id="ZKDsXuUwsy0hbxIivcUl4c" class="mini-btn" id="btnResetStamp" style="margin-left:5px">恢复默认</button>
+        </div>
+        <input data-page-node-id="2IXMuWg7FlUAOCUcDPpGLv" type="file" id="fileStamp" accept="image/*" hidden="" style="font-size:16px">
+      </div>
+    </section>
+
+    <section data-page-node-id="cUUqScdGdcCRkiQe1FfBSr" class="section">
+      <h2 data-page-node-id="pwelRqnFWkOgDkElm1PBf9" class="section-title"><em data-page-node-id="lnXKHpyH7NRG6Dj7LoLmqU">03</em> 马赛克效果 <span data-page-node-id="wHJvJkWwEqv5NqNsjx4fxu" class="spacer"></span><span data-page-node-id="jC8ux5Y1jwzkC1UR7gYnGg" class="tag-new">NEW</span></h2>
+      <div data-page-node-id="97itEcGYjZorMW9u7ZF3Cx" class="switch-row" id="mosaicRow" style="font-size:16px">
+        <div data-page-node-id="CO78hUqXZrdgpAR4F9Gcim" class="txt">
+          <strong data-page-node-id="CoMvCSzVDdMafa7uFU01j8">像素马赛克</strong>
+          <span data-page-node-id="Vsuk4kVxVNg0n9Vs4abWzs" class="hint">用纯黑方形像素块重绘图形，块内墨量决定方块大小</span>
+        </div>
+        <label data-page-node-id="qU1dzEVEimqfzyPUuglb63" class="switch" title="开启像素马赛克"><input data-page-node-id="18HMJiimPeh68wirdFEBHb" type="checkbox" id="chkMosaic"><span data-page-node-id="IihcObvNZhLXiTtf93jY7N" class="track"></span></label>
+      </div>
+      <div data-page-node-id="0wPlnIjZxENy5PJjh1QvP1" class="slider-row">
+        <div data-page-node-id="RI80v3aaCYP5eFpWnllXcv" class="slider-head"><label data-page-node-id="FmxZtoFMjA4ZxmjKACm9Ty" for="rMosaic">像素块大小</label><output data-page-node-id="KaXltuWIiteA3mb9BCdro0" id="oMosaic">16 px</output></div>
+        <input data-page-node-id="QDPGQsyug1NhBrdQuEYXKG" type="range" id="rMosaic" min="1" max="100" step="1" value="16">
+        <div data-page-node-id="Xnvxk0G3TjI8MFTwLXepj9" class="range-ends"><span data-page-node-id="5R9D2UBZkh8do9FEPGVJCx">精细 1px</span><span data-page-node-id="h7yFlbHDtpAlmcLNvefT1e">粗颗粒 100px</span></div>
+      </div>
+      <p data-page-node-id="fK0qRAdjFSEkSGIyv9YqC6" class="mini-note">开启后用方形像素块重绘，忽略点形状与间距；与复古半调互斥。</p>
+    </section>
+
+    <section data-page-node-id="s45hsiNKsI3Ep4qIdZel0D" class="section">
+      <h2 data-page-node-id="125Di1SaE7qKpCgDHf0Oij" class="section-title"><em data-page-node-id="cR7tbxolcBDVDvSW8t8npF">04</em> 点阵参数 <span data-page-node-id="i9PJFSFoaUXHxHaSAU7o7R" class="spacer"></span><button data-page-node-id="606rLAkl9dHvEmsHR47E9V" class="link-btn" id="btnReset">重置</button></h2>
+      <div data-page-node-id="MfTE7hNwlW85bnaMNZHnFe" class="slider-row">
+        <div data-page-node-id="ecri8h17bfvjZ5iFFbWET7" class="slider-head"><label data-page-node-id="ps4nYwSWn8rOVOtt0Ml4sn" for="rBlur">图形模糊度</label><output data-page-node-id="TFJEmr02xhDWPkXCqB2Jd8" id="oBlur">0 px</output></div>
+        <input data-page-node-id="xJelY4l6irao7zJFrEsFEt" type="range" id="rBlur" min="0" max="20" step="0.5" value="0">
+        <div data-page-node-id="NQ7FFGv6n2VUso8JUMiZpw" class="range-ends"><span data-page-node-id="2aA7xOISz6kx5D2142Gu4m">保持锐利</span><span data-page-node-id="oO2chMqj9GwS7VpYDeFZFk">边缘柔和 20px</span></div>
+        <p data-page-node-id="pCJH6Mz3cWkBRIYWtT6Y8f" class="mini-note">模糊时自动向四周留出安全边，柔和过渡不被裁切，导出尺寸随留边扩展。</p>
+      </div>
+      <div data-page-node-id="FvviXLPsDbNf2I3KZJ4Rp3" class="slider-row" id="spacingRow">
+        <div data-page-node-id="fUEyl49l81BMEwXqvLPuAf" class="slider-head"><label data-page-node-id="ko9v04ofyO1C2ysBgiHdrQ" for="rSpacing">点与点的间距</label><output data-page-node-id="u3TKZ4nGNbKFi1qlj7H5Hx" id="oSpacing">12 px</output></div>
+        <input data-page-node-id="Vm4sh9WC6TYrcG3wcmnJdr" type="range" id="rSpacing" min="4" max="60" step="1" value="12">
+        <div data-page-node-id="RKSieEtwBPQqUvHXr9Ew7m" class="range-ends"><span data-page-node-id="rjCzuDl1bVDDKUe7CKEmBe">密集 4px</span><span data-page-node-id="znOczv4DNW2D6sYvmYpqzM">稀疏 60px</span></div>
+      </div>
+      <div data-page-node-id="IqQGGqMSgDBmKjQ5TpPkq7" class="slider-row" id="sizeRow">
+        <div data-page-node-id="UQnKquvCu8oGReRMdwK0X1" class="slider-head"><label data-page-node-id="tosHTdvAXtG9KN6C4LfhFc" for="rSize">点的大小</label><output data-page-node-id="surfS34e8mcwKEMp8vzdJT" id="oSize">100%</output></div>
+        <input data-page-node-id="DS4Bh1lnmWEe0G0Iy6bnWt" type="range" id="rSize" min="10" max="160" step="5" value="100">
+        <div data-page-node-id="I2tT8hStjGhHQAUFRxGEJa" class="range-ends"><span data-page-node-id="FEHPVKEgjA15LIGu66ULSF">小</span><span data-page-node-id="JcNYYnvHCGtFFE2TpaWCbQ">可超出间距相互重叠</span></div>
+      </div>
+      <div data-page-node-id="FoCtr1Wckriqo5m2urYSD9" class="switch-row" id="uniformRow">
+        <div data-page-node-id="Cy3zfzrGDGOz402DWN840w" class="txt">
+          <strong data-page-node-id="EBHaFgKHootegssdDP3ZVh">点大小一致</strong>
+          <span data-page-node-id="4bxpz9Uw6tWfo3FoqEH44B" class="hint">所有点使用同一尺寸，明暗改由点的疏密表现（建议点大小 ≤ 100%）</span>
+        </div>
+        <label data-page-node-id="tgED16jWU6Ew257KDRrRxT" class="switch" title="统一所有点的大小"><input data-page-node-id="yl0da4ZzVlOtl8ohdqMD5A" type="checkbox" id="chkUniform"><span data-page-node-id="woTiZUv0qDvSUVKEZcN5T6" class="track"></span></label>
+      </div>
+      <div data-page-node-id="Nu146YVXRBZXZpwmnQKBCx" class="slider-row">
+        <div data-page-node-id="eoApGo1oY8hrIkBvbHHCGR" class="slider-head"><label data-page-node-id="KB01kWDCXaWRFelMRULfIo" for="rGamma">黑度响应曲线</label><output data-page-node-id="LzvM61zgVFvOXVetAMyEEm" id="oGamma">1.00</output></div>
+        <input data-page-node-id="QLrILVxsvbKu3emE0nwWco" type="range" id="rGamma" min="0.4" max="2.5" step="0.05" value="1">
+        <div data-page-node-id="ASAjJ3u0b3mJyPBHzFCrac" class="range-ends"><span data-page-node-id="rbiNYsA6bjYTEsbam3tI4p">浅色更明显</span><span data-page-node-id="Nyve8zyW9hFMoXWdOLLVwc">对比更强</span></div>
+      </div>
+      <div data-page-node-id="I2Yzm9pJIFxu31vEHweJz5" class="slider-row">
+        <div data-page-node-id="peVj1aVxJfWGfuT0PW71pe" class="slider-head"><label data-page-node-id="qCQhH2eOBEUqygf81rhKIf" for="rThreshold">杂色过滤阈值</label><output data-page-node-id="qCQPYmcCZ6TP8HM3YzTjoG" id="oThreshold">2%</output></div>
+        <input data-page-node-id="02xrGC0Ubb9eqII4DNIpUC" type="range" id="rThreshold" min="0" max="30" step="1" value="2">
+        <div data-page-node-id="G5NURgglGQG3C0PTZXomgG" class="range-ends"><span data-page-node-id="hFalHHVaz68EsJG0lumrIG">保留全部</span><span data-page-node-id="3m1MbBkHcKbKxSKf22fpG9">只保留最黑</span></div>
+      </div>
+    </section>
+
+    <section data-page-node-id="JzAPIp1B7aTvSs7WbzcFGT" class="section">
+      <h2 data-page-node-id="EQMKBNzuIHfW2jWyFhrBQW" class="section-title"><em data-page-node-id="L70pmTfTl5DAtq9kvwsRSR">05</em> 复古半调效果</h2>
+      <div data-page-node-id="GTsHLIJlkw7H9xClW6Se5D" class="switch-row" id="retroRow">
+        <div data-page-node-id="egFiSFkZkNIvnxlmcuacgg" class="txt">
+          <strong data-page-node-id="5Pao9qcbLECBALEuzCOImf">复古半调</strong>
+          <span data-page-node-id="vMIXru5DFJDqGlEFhXRc80" class="hint">经典 45° 圆点网屏 + 旧纸底色 + 印刷颗粒与网点不匀（此模式使用圆点）</span>
+        </div>
+        <label data-page-node-id="XZuxUbeDY8TC4YDtNciPBx" class="switch" title="开启复古半调"><input data-page-node-id="pjezdDLEL8ipHeQ1zbfzK1" type="checkbox" id="chkRetro"><span data-page-node-id="olowsEb1EZ9O4PPdiAmY7d" class="track"></span></label>
+      </div>
+      <div data-page-node-id="FbHSD3s0w61nC8S2DSFz2U" class="retro-extra" id="retroExtra">
+        <div data-page-node-id="4XOb9jaKl2rfg2a8AhRSGD" class="slider-row" style="margin-bottom:2px">
+          <div data-page-node-id="sW7nRU7zUVPQbZbFmmoiJ8" class="slider-head"><label data-page-node-id="ieV0STlaAszEJIET076OS2" for="rRetro">做旧强度</label><output data-page-node-id="9VUeJGai9q2ngLu3GwIdMZ" id="oRetro">50%</output></div>
+          <input data-page-node-id="DFyR69GtWE6HtnmqvJkMYI" type="range" id="rRetro" min="0" max="100" step="5" value="50">
+          <div data-page-node-id="g6pyI8fB8o0ykMMnLiZSUm" class="range-ends"><span data-page-node-id="ypNEJarT3u1qMAaOsqNBk7">干净</span><span data-page-node-id="AsG511WiiGecLXeC2zHBfy">强烈做旧</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section data-page-node-id="YZbkNwbOh3phlgFymBnkz8" class="section">
+      <h2 data-page-node-id="5HJsd1yp7i1docv399Gxva" class="section-title"><em data-page-node-id="6pHyiP19juFyvevuxDdJpR">06</em> 输出设置</h2>
+      <div data-page-node-id="s1U4pWvVd3NEbwInfZgqPF" class="field-grid">
+        <div data-page-node-id="tqriBe5Xv7lXHrcMSEPVjZ" class="field">
+          <label data-page-node-id="IOaDDfIvwImQKLcdK08dMB" for="selLayout">排列方式</label>
+          <select data-page-node-id="lCqWmPZRzkz1VSyt9NnWy7" id="selLayout"><option data-page-node-id="XYT43zNY7NFDQcQ6fSP0H5" value="grid">正交网格</option><option data-page-node-id="411hMFExbUA7fTMkjcmN0o" value="hex">错行 / 六边形</option></select>
+        </div>
+        <div data-page-node-id="bJOGo4IO3MN0FHls5wiSny" class="field">
+          <label data-page-node-id="1NfbkAzJcuCYyzfXjYDVLT" for="selBg">画布背景</label>
+          <select data-page-node-id="Nwyz0UlgwscYuTPVSwiysv" id="selBg"><option data-page-node-id="1VTYb2rcPLnmdCU9FgVR8h" value="white">纯白</option><option data-page-node-id="9mKGDY43Ma8dfdSuwIWDQA" value="transparent">透明</option></select>
+        </div>
+        <div data-page-node-id="kEv2bZ2rDLRqAjbHH5PUHA" class="field full">
+          <label data-page-node-id="IfGA8fJRiuVvSpHJbzI78Y" for="selScale">PNG 导出倍率（SVG 为矢量，不受影响）</label>
+          <select data-page-node-id="3iyex7VqOF7osaWUWfKBbd" id="selScale"><option data-page-node-id="dR0gB34TXKiOC4LOpt8ZdJ" value="1">1× 原始尺寸</option><option data-page-node-id="uE5zF09Zff44vYXLOX3Nil" value="2" selected="">2× 高清</option><option data-page-node-id="vslsAgI6ND6Oqs9pRegyRH" value="3">3× 超清</option><option data-page-node-id="YkOG1tPg1IIlpUoUYAhdCs" value="4">4× 印刷级</option></select>
+        </div>
+      </div>
+    </section>
+
+    <section data-page-node-id="zGAKNKbLGieEsjUyakdkCH" class="section">
+      <h2 data-page-node-id="FOJPXfhvK2YjNKNto35DBM" class="section-title"><em data-page-node-id="7ARYFzAqaJHDfCVjci27RZ">07</em> 批量处理 <span data-page-node-id="SrjHoDYl5CxUo1VFKZFCMX" class="spacer"></span><span data-page-node-id="x2r8EGxVBHpaZnj0EpYud1" class="batch-count" id="batchCount"></span></h2>
+      <div data-page-node-id="cyI6jmd0by1qAJeNyNHWMI" style="display:flex;gap:8px">
+        <button data-page-node-id="CkUw0dIbQOvbWemPGeByOy" class="mini-btn" id="btnBatchAdd" style="flex:1">＋ 批量上传图片（可多选）</button>
+        <button data-page-node-id="itp00X4ZdTwAzTNWTMjyvq" class="mini-btn" id="btnBatchClear">清空</button>
+      </div>
+      <input data-page-node-id="CuWaag7VmYQDjjjDFgXoWk" type="file" id="fileBatch" multiple="" accept="image/*" hidden="">
+      <div data-page-node-id="RFVX7afuk9xHqzhNSZi4OE" class="batch-list" id="batchList"></div>
+      <div data-page-node-id="jBS3MMAFGwmJ5cMTbrQFiy" class="batch-opts">
+        <label data-page-node-id="yHcpCby4txGGFOFRxwV4CP"><input data-page-node-id="tGdOux7N3hJ2RHXAE2lGih" type="checkbox" id="chkBatchPng" checked=""> 导出 PNG</label>
+        <label data-page-node-id="6kMWfqj79CG9whafCwf7ER"><input data-page-node-id="azdTc6VFv8jfatr8hZfLbv" type="checkbox" id="chkBatchSvg" checked=""> 导出 SVG</label>
+      </div>
+      <button data-page-node-id="XCcQ3BGnwEqY9UmveaoVnc" class="btn primary" id="btnBatchZip">打包下载 ZIP</button>
+      <p data-page-node-id="UdMDWqEYatvoih2bBFbUR4" class="batch-note">当前所有设置（点形状、间距、马赛克、复古、模糊等）会套用到队列中的每一张图片。点击文件名可载入预览并继续调效果。</p>
+    </section>
+
+    <section data-page-node-id="wENTX3YDg5bybehCPJluB1" class="section">
+      <h2 data-page-node-id="W6qzpA2C1MHDlqd6fzhcc7" class="section-title"><em data-page-node-id="dCPzBjNEqKMaUn2HqZ9DsO">08</em> 参数配置 <span data-page-node-id="D6N4YRytsN7hYzrpWRpPe9" class="spacer"></span><span data-page-node-id="CwjcaHYviLjXT7wkC8LJJJ" class="batch-count" id="cfgStatus">已记忆</span></h2>
+      <div data-page-node-id="Wzn9mwLaJp093cL7rzFkbB" class="switch-row on" id="autoSaveRow">
+        <div data-page-node-id="EINrALTGIzD6oahXtnL74Q" class="txt">
+          <strong data-page-node-id="XVw1oPUYGM9Cr5mbss1MaO">自动记忆上次参数</strong>
+          <span data-page-node-id="V9BIGaEWIkEOBDzqKAtgwp" class="hint">刷新或重开页面后自动恢复，仅保存在本浏览器</span>
+        </div>
+        <label data-page-node-id="lFxoak8gglDn95yoo3FnuZ" class="switch" title="开启后自动保存参数"><input data-page-node-id="77MtNAHTO96D7IsepNl6ph" type="checkbox" id="chkAutoSave" checked=""><span data-page-node-id="0RAFK5mO1i7dpE6OUu8PUp" class="track"></span></label>
+      </div>
+      <div data-page-node-id="aEsVH1gtXYPpeSnAlYeebs" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:2px">
+        <button data-page-node-id="PY7jS4ViHuLDajVDMfWMXb" class="mini-btn" id="btnCfgExport" style="flex:1;white-space:nowrap">导出配置 JSON</button>
+        <button data-page-node-id="MsQGSyFaFIOO9n8V23gxcN" class="mini-btn" id="btnCfgImport" style="flex:1;white-space:nowrap">导入配置</button>
+      </div>
+      <input data-page-node-id="tNhpuX1NCHLzx0dZL3JcMl" type="file" id="fileCfg" accept=".json,application/json" hidden="">
+      <p data-page-node-id="TJkdZQO76SL4Z6exoBkC8s" class="mini-note">源图片与批量队列不保存；导出 JSON 可备份整套效果，或发给同事一键套用。自定义点阵图形也随配置一起保存。</p>
+    </section>
+
+    <div data-page-node-id="t7Tow5Cw4C6KASDOW0GHId" class="stats">
+      <div data-page-node-id="42iiF7PdExddJZHdQf2bm7" class="stats-head">
+        <span data-page-node-id="YRpv4cGuzOJyJikbH2OHLl" class="stats-ico"><svg data-page-node-id="WOAH93s6y5QMTA1D8NBJt3" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path data-page-node-id="OpEthxfYr37RQF0jV8juNI" d="M4 19V9m5 10V5m5 14v-7m5 7V7"></path></svg></span>
+        <div data-page-node-id="tnEK0LDWadutfU8fpO08Lj"><strong data-page-node-id="wiBZADCLNmvBZVczuu4toj">实时渲染数据</strong><span data-page-node-id="l76ji7M1MOjMR7pKSR57CF">参数改动即时生效</span></div>
+        <i data-page-node-id="0XhqlEpBglk30t2KAULMdB" class="live"></i>
+      </div>
+      <div data-page-node-id="EaOIDy838OEooGewzydlmA" class="stat-grid">
+        <div data-page-node-id="GLgtQwo9DhgX7XJEfeuZdq" class="stat"><b data-page-node-id="07k2keqEB1ahHpdLnHpwt4" id="stDots">0</b><span data-page-node-id="BbwBNWVUFzg60kf6wXVzHx" id="stDotsLabel">点数量</span></div>
+        <div data-page-node-id="kiGxKTn0NYvmiYYveWfjZK" class="stat"><b data-page-node-id="vEeknapUOw18t42AdcnF6A" id="stGrid">0 × 0</b><span data-page-node-id="br2OxOlhCBI8a6bebsH5ax">网格密度</span></div>
+        <div data-page-node-id="3sdFHT3wWjDpDYEks4e5vv" class="stat"><b data-page-node-id="GWyN2mXfh2T3ZDd1iokH1W" id="stPng">0 × 0</b><span data-page-node-id="CqmvieJo1dhV2UXASzg0v1">PNG 输出尺寸</span></div>
+        <div data-page-node-id="GERMEDHzhOHhEXXE7GFvLB" class="stat"><b data-page-node-id="uQUTVAPDiW8OA24TiOwGEe" id="stTime">0 ms</b><span data-page-node-id="yb4NjupEJ2YYhm53ybpIMq">实时渲染耗时</span></div>
+      </div>
+    </div>
+
+  </aside>
+
+  <section data-page-node-id="qJ7YNSQkej8Mb0FVnl5iK0" class="stage">
+    <div data-page-node-id="g3FZSFbMESsDo6qGMDLKG2" class="stage-bar">
+      <span data-page-node-id="lo7KVvt46GYzt68NNHmFW8" class="chip-live"><span data-page-node-id="1UPwIihAbS7uIMBFdyBYAO" class="dot-live"></span>实时预览</span>
+      <span data-page-node-id="A9V9KP2LJ1PuyHBjXOpzyW" class="sep"></span>
+      <span data-page-node-id="MzvWi37wA3x1EfTYGysfW3" class="t-muted" id="barInfo">纯黑点阵 · 白底</span>
+      <span data-page-node-id="JuQNwFUCG3CAqZVj2igVV2" class="grow"></span>
+      <span data-page-node-id="6ai1A4L7mN0duSQrbCdAQM" class="stage-tag">参数改动即时生效，无需重新生成</span>
+      <div data-page-node-id="fHOGp4bLhbqV8YDvGywW0Q" class="zoom-ctrl">
+        <button data-page-node-id="whE3BH7VDEljUsklyuBf3o" id="btnZoomOut" title="缩小">−</button>
+        <span data-page-node-id="R9BOjGsI4qystLhNIGewlj" class="zoom-label" id="zoomLabel">适应</span>
+        <button data-page-node-id="iCCysJ8gbyn4mRlqK0q78M" id="btnZoomIn" title="放大">＋</button>
+        <button data-page-node-id="U3oWRSR3zFjIZocqtr1PKc" class="zoom-fit" id="btnZoomFit" title="适应窗口（也可双击画布）">复位</button>
+      </div>
+    </div>
+    <div data-page-node-id="kzyx2VVSPXrxtt0CEdhdPQ" class="canvas-wrap" id="canvasWrap">
+      <div data-page-node-id="nmMo2AZ6oPNDwc2SwIORRn" class="paper" id="paper"><canvas data-page-node-id="LFHBKc0BEtx2uB0UVlWQdS" id="preview"></canvas></div>
+      <div data-page-node-id="w4jku0FZy6QnrZNVgjFKln" class="drop-overlay">松开鼠标：单张替换源图，多张加入批量队列</div>
+    </div>
+    <div data-page-node-id="AfR78DR84KI6TvxUO99KZS" class="stage-foot">
+      <span data-page-node-id="mRV3SPSFC8oHQ85uPzOtM4" class="tip-zoom"><svg data-page-node-id="luV5K9Lo5dSSm0F0dxab3o" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle data-page-node-id="YwS2xpd5Pmpv7vMK9QbILL" cx="10.5" cy="10.5" r="6.5"></circle><path data-page-node-id="8GeAkbQCf9cF3DBVjqdSLY" d="m15.5 15.5 5 5M8 10.5h5M10.5 8v5"></path></svg>滚轮 / 双指缩放 · 拖动查看细节 · 双击适应窗口</span>
+      <span data-page-node-id="cGvalUoGTqJOHfia00HgGS"><svg data-page-node-id="WEREcosfhJiSBXRMwuA0az" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path data-page-node-id="JdIDAMUj9ESakOh6IK8zRu" d="M12 16V4m0 0L8 8m4-4 4 4M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"></path></svg>拖放图片到预览区即可替换源图</span>
+      <span data-page-node-id="pB0RRVQKNtM8GWcPQxwvED"><svg data-page-node-id="M0cBHxreJYQEYlAIBBo57G" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect data-page-node-id="jRu9Xkq7udSSGvVxBLiTnU" x="8" y="4" width="8" height="16" rx="2"></rect><path data-page-node-id="gaePjlX05fspomOBYfWFik" d="M12 8v4"></path></svg><kbd data-page-node-id="m4EmcjDFubAnI8PiQTagSX">Ctrl</kbd> + <kbd data-page-node-id="qlWEP1HN75ZO4L6NBYudi7">V</kbd> 粘贴剪贴板图片</span>
+      <span data-page-node-id="N831hMC9QLiQnDUxTihMnR"><svg data-page-node-id="2aqEXkQzvY7mWu3BxeWO49" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path data-page-node-id="fesoMaWJQIkPrS6DoJ4ReB" d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6l-8-3Z"></path><path data-page-node-id="CT1sosMkcujeE0YHiVsOvB" d="m9 12 2 2 4-4"></path></svg>所有处理均在本地浏览器完成，图片不会上传</span>
+    </div>
+  </section>
+</main>
+</div>
+
+<div data-page-node-id="gSVFBxUwAA3H9ngh4ypQin" class="page-foot">
+  <div data-page-node-id="rMV4o1yaE5LQFI82SOMGug" class="feature">
+    <span data-page-node-id="h0PhcSLCTgALZkEMW7QQQc" class="fi"><svg data-page-node-id="gmTCBw7BT5fSkQOLk0NLhZ" viewBox="0 0 24 24"><path data-page-node-id="I1VoACioIHCLnxRy9oJoEy" d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6l-8-3Z"></path><path data-page-node-id="rRTUdYSODYoqYFIFbABBn9" d="m9 12 2 2 4-4"></path></svg></span>
+    <div data-page-node-id="ASAT70dHGQVsATwMC7uhMP"><strong data-page-node-id="vCoykWEPDZ0W1tTLDvwo61">本地处理</strong><span data-page-node-id="Y63nBoFdteW7dF3xe33Gj3">图片不上传，隐私更安全</span></div>
+  </div>
+  <div data-page-node-id="zPuCvDcZhnBLQQFFTXEDGq" class="feature">
+    <span data-page-node-id="Gsx2s1EjlTSJ7Pv5TDzVym" class="fi"><svg data-page-node-id="5WGbAqo9UpwKbdRlUTH0Ap" viewBox="0 0 24 24"><circle data-page-node-id="ErOLLapLRCTojRIMtR54We" cx="12" cy="12" r="9"></circle><path data-page-node-id="Bcsc4rUnVDZw499JhkKwXT" d="M12 7v5l3 2"></path></svg></span>
+    <div data-page-node-id="mkQYkNtCxf3kBOVdtT3y7w"><strong data-page-node-id="1jOdzjsc25CRl1RDNCi9AR">实时预览</strong><span data-page-node-id="ZMXyq8BThTYXtjxm59PCsN">参数调整即时可见</span></div>
+  </div>
+  <div data-page-node-id="9VQHSpJ6VuTsKYStyYfRvx" class="feature">
+    <span data-page-node-id="3IZ6Hun6Lhe75Xdqb88Amj" class="fi"><svg data-page-node-id="ilvHHchnQF3OY76EOxCY7g" viewBox="0 0 24 24"><path data-page-node-id="nt7Cg7IJV4zFVvNteejuWX" d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v3h16v-3"></path></svg></span>
+    <div data-page-node-id="Hnp0zsFVCSoVnoXo7uMLDl"><strong data-page-node-id="kcFdubdXRFuDQdM2VYAVXR">矢量导出</strong><span data-page-node-id="5GiR1Somkl1UyHBN5wHYfR">PNG / SVG 双格式下载</span></div>
+  </div>
+  <div data-page-node-id="5M8J3YDZIkXrskeHqCKJ6u" class="feature">
+    <span data-page-node-id="9umU6nreDICCG4yxnoObho" class="fi"><svg data-page-node-id="JTLKTOlHXhDTgIDQCzPWK7" viewBox="0 0 24 24"><rect data-page-node-id="zYafTZckxXyOOPvRK7jze3" x="3" y="3" width="8" height="8" rx="1.5"></rect><rect data-page-node-id="meVHmXQgB6jzHPfHXVFZqd" x="13" y="3" width="8" height="8" rx="1.5"></rect><rect data-page-node-id="cRDhz0FFm6eEP6viN2U5oR" x="3" y="13" width="8" height="8" rx="1.5"></rect><rect data-page-node-id="Nvi25S8GJ6og1Ca662suG2" x="13" y="13" width="8" height="8" rx="1.5"></rect></svg></span>
+    <div data-page-node-id="ZDu2gbGqnLdjkWeu4LM1Xz"><strong data-page-node-id="z81GMjyq6Kfzskv66rqRdU">批量处理</strong><span data-page-node-id="xJKu3ZpEaMW9P0lW3GRjYd">一套参数，一键打包 ZIP</span></div>
+  </div>
+</div>
+
+<div data-page-node-id="z6FQZkXsvV1SZe75qvu0Fe" class="toast" id="toast"></div>
+
+<script data-page-node-id="d5as5wQw2QvTLFiAzT28xd" data-pnid-children="9pgOra00FJJY0g97EtWoHm">
+(function(){
+'use strict';
+
+const $ = id => document.getElementById(id);
+const f = n => Math.round(n * 100) / 100;
+const clamp = (v,a,b) => v < a ? a : (v > b ? b : v);
+
+const state = {
+  name: '示例图形',
+  W: 0, H: 0,
+  sat: null,
+  srcCanvas: null,
+  baseCanvas: null, baseW: 0, baseH: 0, pad: 0,
+  shape: 'circle',
+  mosaic: false,
+  mosaicSize: 16,
+  spacing: 12,
+  sizeFactor: 1,
+  uniform: false,
+  gamma: 1,
+  threshold: 0.02,
+  blur: 0,
+  retro: false,
+  retroStrength: 50,
+  layout: 'grid',
+  background: 'white',
+  exportScale: 2,
+  stampHi: null,
+  stampSmall: null,
+  stampPath: '',
+  stampCustom: false,
+  grain: [],
+  dots: []
+};
+
+/* config persistence: declared up front so the render loop can call queueSave() safely */
+const CFG_KEY = 'dms.config.v1';
+const AUTO_KEY = 'dms.autosave.v1';
+const CFG_FIELDS = ['shape','mosaic','mosaicSize','spacing','sizeFactor','uniform',
+                    'gamma','threshold','blur','retro','retroStrength','layout',
+                    'background','exportScale'];
+let storageOK = true, saveTimer = 0;
+
+const preview = $('preview');
+const pctx = preview.getContext('2d');
+let rafId = 0, toastTimer = 0;
+
+function toast(msg){
+  const el = $('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2600);
+}
+
+/* ---------------- image loading ---------------- */
+function readAsDataURL(file){
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result);
+    r.onerror = () => rej(new Error('文件读取失败'));
+    r.readAsDataURL(file);
+  });
+}
+function readAsText(file){
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result);
+    r.onerror = () => rej(new Error('文件读取失败'));
+    r.readAsText(file);
+  });
+}
+function loadImage(src){
+  return new Promise((res, rej) => {
+    const img = new Image();
+    img.onload = () => res(img);
+    img.onerror = () => rej(new Error('图片无法解析，请换一个文件'));
+    img.src = src;
+  });
+}
+function parseNum(v){
+  if(!v) return null;
+  const m = String(v).match(/-?[\d.]+/);
+  return m ? parseFloat(m[0]) : null;
+}
+function svgSize(text){
+  try{
+    const doc = new DOMParser().parseFromString(text, 'image/svg+xml');
+    const root = doc.documentElement;
+    const rawW = root.getAttribute('width'), rawH = root.getAttribute('height');
+    let w = (rawW && rawW.indexOf('%') < 0) ? parseNum(rawW) : null;
+    let h = (rawH && rawH.indexOf('%') < 0) ? parseNum(rawH) : null;
+    const vb = (root.getAttribute('viewBox') || '').split(/[\s,]+/).map(Number);
+    if((!w || !h) && vb.length === 4 && vb[2] > 0 && vb[3] > 0){
+      if(!w && !h){ w = vb[2]; h = vb[3]; }
+      else if(!w){ w = h * vb[2] / vb[3]; }
+      else { h = w * vb[3] / vb[2]; }
+    }
+    return { w: w || 800, h: h || 600 };
+  }catch(e){ return { w: 800, h: 600 }; }
+}
+
+function isImageFile(file){
+  return !!file && (/^image\//.test(file.type) || /\.(svg|png|jpe?g|webp|bmp|gif)$/i.test(file.name));
+}
+async function fileToImage(file){
+  let src, forced = null;
+  if(file.type === 'image/svg+xml' || /\.svg$/i.test(file.name)){
+    const text = await readAsText(file);
+    forced = svgSize(text);
+    src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(text);
+  }else{
+    src = await readAsDataURL(file);
+  }
+  const img = await loadImage(src);
+  return { img: img, forced: forced, name: file.name.replace(/\.[^.]+$/, '') };
+}
+async function handleSourceFile(file){
+  if(!isImageFile(file)){ toast('请选择图片文件'); return; }
+  try{
+    const r = await fileToImage(file);
+    setSource(r.img, r.name, r.forced);
+    toast('源图片已载入：' + file.name);
+  }catch(err){ toast(err.message || '图片载入失败'); }
+}
+
+// Draw the source on an opaque white sheet so ink is always well defined.
+function prepareImage(img, forced){
+  let w = forced ? forced.w : (img.naturalWidth || img.width);
+  let h = forced ? forced.h : (img.naturalHeight || img.height);
+  if(!w || !h){ w = 800; h = 600; }
+  const k = Math.min(1, 1400 / Math.max(w, h));
+  const W = Math.max(1, Math.round(w * k));
+  const H = Math.max(1, Math.round(h * k));
+  const c = document.createElement('canvas');
+  c.width = W; c.height = H;
+  const g = c.getContext('2d', { willReadFrequently: true });
+  g.fillStyle = '#ffffff';
+  g.fillRect(0, 0, W, H);
+  g.drawImage(img, 0, 0, W, H);
+  return { W: W, H: H, src: c };
+}
+
+// A Gaussian spreads ink roughly 3*sigma beyond the artwork. Blurring directly
+// on the original canvas clips that halo at the four borders (and CSS/canvas
+// filters additionally sample "transparent" outside, which eats edge ink).
+// Reserve a white safety margin of 3*sigma so the whole soft edge fits inside.
+function blurPadding(){ return state.blur > 0 ? Math.ceil(state.blur * 3) : 0; }
+
+function updateSrcSize(){
+  $('srcSize').textContent = state.baseW + ' × ' + state.baseH +
+                             (state.pad ? ' · 留边 ' + state.pad + 'px' : '');
+}
+
+function buildPaddedSource(){
+  const bw = state.baseW, bh = state.baseH, base = state.baseCanvas;
+  if(!base || !bw || !bh) return false;
+  const P = blurPadding();
+  const W = bw + P * 2, H = bh + P * 2;
+  if(P === 0){
+    state.srcCanvas = base;
+  }else{
+    const c = document.createElement('canvas');
+    c.width = W; c.height = H;
+    const g = c.getContext('2d', { willReadFrequently: true });
+    g.fillStyle = '#ffffff';
+    g.fillRect(0, 0, W, H);
+    g.drawImage(base, P, P, bw, bh);
+    state.srcCanvas = c;
+  }
+  const changed = state.W !== W || state.H !== H;
+  state.W = W; state.H = H; state.pad = P;
+  preview.width = W; preview.height = H;
+  if(changed) fitPaper();
+  updateSrcSize();
+  return true;
+}
+
+// Three separable box passes approximate a Gaussian. Edges are CLAMPED
+// (replicated) instead of sampled as transparent, so border ink is preserved
+// and the result is identical in every browser (no ctx.filter dependency).
+function blurInk(ink, W, H, sigma){
+  const r = Math.max(1, Math.round(sigma));
+  const win = r * 2 + 1;
+  const tmp = new Float32Array(W * H);
+  const cx = i => i < 0 ? 0 : (i >= W ? W - 1 : i);
+  const cy = i => i < 0 ? 0 : (i >= H ? H - 1 : i);
+  for(let pass = 0; pass < 3; pass++){
+    for(let y = 0; y < H; y++){
+      const row = y * W;
+      let acc = 0;
+      for(let i = -r; i <= r; i++) acc += ink[row + cx(i)];
+      for(let x = 0; x < W; x++){
+        tmp[row + x] = acc / win;
+        acc -= ink[row + cx(x - r)];
+        acc += ink[row + cx(x + r + 1)];
+      }
+    }
+    for(let x = 0; x < W; x++){
+      let acc = 0;
+      for(let i = -r; i <= r; i++) acc += tmp[cy(i) * W + x];
+      for(let y = 0; y < H; y++){
+        ink[y * W + x] = acc / win;
+        acc -= tmp[cy(y - r) * W + x];
+        acc += tmp[cy(y + r + 1) * W + x];
+      }
+    }
+  }
+}
+
+// Rebuild the ink summed-area table from the untouched source (with optional blur).
+function rebuildInk(){
+  if(!buildPaddedSource()) return;
+  const W = state.W, H = state.H;
+  const data = state.srcCanvas.getContext('2d', { willReadFrequently: true })
+                     .getImageData(0, 0, W, H).data;
+  const ink = new Float32Array(W * H);
+  for(let i = 0, p = 0; i < ink.length; i++, p += 4){
+    const a = data[p + 3] / 255;
+    const lum = (0.299 * data[p] + 0.587 * data[p + 1] + 0.114 * data[p + 2]) / 255;
+    ink[i] = clamp(a * (1 - lum), 0, 1);
+  }
+  if(state.blur > 0) blurInk(ink, W, H, state.blur);
+  const sat = new Float64Array((W + 1) * (H + 1));
+  for(let y = 0; y < H; y++){
+    let row = 0;
+    const sAbove = y * (W + 1), sCur = (y + 1) * (W + 1);
+    for(let x = 0; x < W; x++){
+      row += ink[y * W + x];
+      sat[sCur + x + 1] = sat[sAbove + x + 1] + row;
+    }
+  }
+  state.sat = sat;
+}
+
+/* ---------------- preview zoom & pan ---------------- */
+const MIN_ZOOM = 0.25, MAX_ZOOM = 10;
+const view = { zoom: 1, panX: 0, panY: 0 };   // 1 = fit-to-window
+
+function updateZoomLabel(){
+  $('zoomLabel').textContent = Math.abs(view.zoom - 1) < 0.005 ? '适应' : Math.round(view.zoom * 100) + '%';
+}
+function clampPan(){
+  const wrap = $('canvasWrap'), paper = $('paper');
+  const w = paper.offsetWidth * view.zoom, h = paper.offsetHeight * view.zoom;
+  const maxX = Math.max(30, w / 2 + wrap.clientWidth / 2 - 70);
+  const maxY = Math.max(30, h / 2 + wrap.clientHeight / 2 - 70);
+  view.panX = clamp(view.panX, -maxX, maxX);
+  view.panY = clamp(view.panY, -maxY, maxY);
+}
+function applyView(){
+  $('paper').style.transform = 'translate(' + view.panX.toFixed(2) + 'px,' + view.panY.toFixed(2) + 'px) scale(' + view.zoom.toFixed(4) + ')';
+  updateZoomLabel();
+}
+function resetView(){
+  view.zoom = 1; view.panX = 0; view.panY = 0;
+  applyView();
+}
+// zoom around a point measured from the centre of the stage
+function zoomAt(next, mx, my){
+  const old = view.zoom;
+  const z = clamp(next, MIN_ZOOM, MAX_ZOOM);
+  if(Math.abs(z - old) < 1e-6) return;
+  const k = z / old;
+  view.panX = mx - (mx - view.panX) * k;
+  view.panY = my - (my - view.panY) * k;
+  view.zoom = z;
+  clampPan();
+  applyView();
+}
+
+// Keep the whole artboard visible inside the preview stage (never crop it).
+function fitPaper(){
+  if(!state.W || !state.H) return;
+  const wrap = $('canvasWrap');
+  const cs = getComputedStyle(wrap);
+  const availW = wrap.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+  const availH = wrap.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+  const k = Math.min(1, availW / state.W, availH / state.H);
+  $('paper').style.width = Math.max(1, Math.round(state.W * k)) + 'px';
+  clampPan();
+  applyView();
+}
+
+function setSource(img, name, forced){
+  const p = prepareImage(img, forced);
+  state.baseCanvas = p.src; state.baseW = p.W; state.baseH = p.H;
+  state.name = name;
+  $('srcName').textContent = name;
+  rebuildInk();
+  resetView();          // a new image starts at fit-to-window
+  schedule();
+}
+
+/* ---------------- demo ---------------- */
+function makeDemo(){
+  const W = 960, H = 640;
+  const c = document.createElement('canvas');
+  c.width = W; c.height = H;
+  const g = c.getContext('2d');
+  g.fillStyle = '#ffffff'; g.fillRect(0, 0, W, H);
+  g.fillStyle = '#000000';
+  g.beginPath(); g.arc(180, 180, 108, 0, Math.PI * 2); g.fill();
+  const grd = g.createRadialGradient(480, 180, 6, 480, 180, 122);
+  grd.addColorStop(0, '#000000'); grd.addColorStop(.55, '#707070'); grd.addColorStop(1, '#ffffff');
+  g.fillStyle = grd;
+  g.beginPath(); g.arc(480, 180, 122, 0, Math.PI * 2); g.fill();
+  g.fillStyle = '#000000';
+  g.beginPath(); g.moveTo(770, 66); g.lineTo(898, 292); g.lineTo(642, 292); g.closePath(); g.fill();
+  g.textAlign = 'center';
+  g.fillStyle = '#000000';
+  g.font = '700 88px "PingFang SC","Microsoft YaHei",Arial,sans-serif';
+  g.fillText('点阵工坊', 480, 438);
+  g.font = '600 25px Arial,sans-serif';
+  g.fillText('D O T   M A T R I X   S T U D I O', 480, 488);
+  for(let i = 0; i < 6; i++){
+    const lw = 3 + i * 5;
+    g.fillRect(112 + i * 132, 552, 88, lw);
+  }
+  return c;
+}
+
+/* ---------------- custom dot stamp ---------------- */
+function stampFromImage(img){
+  const S = 256;
+  const c = document.createElement('canvas');
+  c.width = S; c.height = S;
+  const g = c.getContext('2d', { willReadFrequently: true });
+  g.clearRect(0, 0, S, S);
+  const iw = img.naturalWidth || img.width || S;
+  const ih = img.naturalHeight || img.height || S;
+  const ratio = iw / ih || 1;
+  let w, h;
+  if(ratio >= 1){ w = S; h = S / ratio; } else { h = S; w = S * ratio; }
+  g.drawImage(img, (S - w) / 2, (S - h) / 2, w, h);
+  const d = g.getImageData(0, 0, S, S);
+  for(let i = 0; i < d.data.length; i += 4){
+    const a = d.data[i + 3] / 255;
+    const lum = (0.299 * d.data[i] + 0.587 * d.data[i + 1] + 0.114 * d.data[i + 2]) / 255;
+    d.data[i] = 0; d.data[i + 1] = 0; d.data[i + 2] = 0;
+    d.data[i + 3] = Math.round(clamp(a * (1 - lum), 0, 1) * 255);
+  }
+  g.putImageData(d, 0, 0);
+
+  const small = document.createElement('canvas');
+  small.width = 48; small.height = 48;
+  small.getContext('2d').drawImage(c, 0, 0, 48, 48);
+
+  // vectorize stamp into run-length rects (pure black, vector SVG)
+  const m = document.createElement('canvas');
+  m.width = 64; m.height = 64;
+  const mg = m.getContext('2d', { willReadFrequently: true });
+  mg.drawImage(c, 0, 0, 64, 64);
+  const md = mg.getImageData(0, 0, 64, 64).data;
+  let path = '';
+  for(let y = 0; y < 64; y++){
+    let x = 0;
+    while(x < 64){
+      if(md[(y * 64 + x) * 4 + 3] > 110){
+        const start = x;
+        while(x < 64 && md[(y * 64 + x) * 4 + 3] > 110) x++;
+        path += 'M' + start + ' ' + y + 'h' + (x - start) + 'v1h-' + (x - start) + 'z';
+      }else x++;
+    }
+  }
+  return { hi: c, small: small, path: path };
+}
+function applyStamp(obj, thumbLabel){
+  state.stampHi = obj.hi;
+  state.stampSmall = obj.small;
+  state.stampPath = obj.path;
+  const box = $('customThumb');
+  box.innerHTML = '';
+  const v = document.createElement('canvas');
+  v.width = 46; v.height = 46;
+  const vg = v.getContext('2d');
+  vg.fillStyle = '#ffffff'; vg.fillRect(0, 0, 46, 46);
+  vg.drawImage(obj.hi, 3, 3, 40, 40);
+  box.appendChild(v);
+  if(thumbLabel) toast('自定义点阵图形已更新');
+  if(state.shape === 'custom') schedule();
+}
+function defaultStamp(){
+  const c = document.createElement('canvas');
+  c.width = 256; c.height = 256;
+  const g = c.getContext('2d');
+  g.fillStyle = '#000';
+  const pts = [];
+  for(let i = 0; i < 10; i++){
+    const r = i % 2 === 0 ? 118 : 50;
+    const a = -Math.PI / 2 + i * Math.PI / 5;
+    pts.push([128 + r * Math.cos(a), 128 + r * Math.sin(a)]);
+  }
+  g.beginPath(); g.moveTo(pts[0][0], pts[0][1]);
+  for(let i = 1; i < pts.length; i++) g.lineTo(pts[i][0], pts[i][1]);
+  g.closePath(); g.fill();
+  return stampFromImage(c);
+}
+async function handleStampFile(file){
+  try{
+    let src;
+    if(file.type === 'image/svg+xml' || /\.svg$/i.test(file.name)){
+      src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(await readAsText(file));
+    }else{
+      src = await readAsDataURL(file);
+    }
+    const img = await loadImage(src);
+    applyStamp(stampFromImage(img), true);
+    state.stampCustom = true;
+    queueSave();
+  }catch(err){ toast('点阵图形载入失败'); }
+}
+
+/* ---------------- halftone core ---------------- */
+// 8x8 Bayer ordered-dither matrix: used only in uniform-size mode so that
+// tone is expressed by dot density while every dot keeps the same diameter.
+const BAYER8 = [
+   0, 32,  8, 40,  2, 34, 10, 42,
+  48, 16, 56, 24, 50, 18, 58, 26,
+  12, 44,  4, 36, 14, 46,  6, 38,
+  60, 28, 52, 20, 62, 30, 54, 22,
+   3, 35, 11, 43,  1, 33,  9, 41,
+  51, 19, 59, 27, 49, 17, 57, 25,
+  15, 47,  7, 39, 13, 45,  5, 37,
+  63, 31, 55, 23, 61, 29, 53, 21
+];
+
+function hash2(a, b){
+  let n = (Math.imul(a, 374761393) + Math.imul(b, 668265263)) | 0;
+  n = Math.imul(n ^ (n >>> 13), 1274126177);
+  return ((n ^ (n >>> 16)) >>> 0) / 4294967295;
+}
+function makeGrain(W, H, strength){
+  if(strength <= 0) return [];
+  const count = Math.min(4200, Math.round(W * H / 260 * (0.3 + 0.7 * strength)));
+  const arr = [];
+  for(let i = 0; i < count; i++){
+    arr.push({
+      x: hash2(i, 17) * W,
+      y: hash2(i, 91) * H,
+      r: 0.35 + hash2(i, 53) * 1.15,
+      a: (0.04 + hash2(i, 211) * 0.09) * (0.5 + 0.5 * strength)
+    });
+  }
+  return arr;
+}
+function paperColor(){
+  if(state.background !== 'white') return null;
+  if(!state.retro || state.mosaic) return '#ffffff';
+  const t = state.retroStrength / 100;
+  return 'rgb(' + Math.round(255 - 14 * t) + ',' + Math.round(255 - 22 * t) + ',' + Math.round(255 - 40 * t) + ')';
+}
+
+function rectAvg(x0, y0, x1, y1){
+  const W = state.W, H = state.H, sat = state.sat, sw = W + 1;
+  x0 = clamp(Math.floor(x0), 0, W); x1 = clamp(Math.ceil(x1), 0, W);
+  y0 = clamp(Math.floor(y0), 0, H); y1 = clamp(Math.ceil(y1), 0, H);
+  const area = (x1 - x0) * (y1 - y0);
+  if(area <= 0) return 0;
+  const s = sat[y1 * sw + x1] - sat[y0 * sw + x1] - sat[y1 * sw + x0] + sat[y0 * sw + x0];
+  return clamp(s / area, 0, 1);
+}
+function computeDots(){
+  const { W, H, spacing, sizeFactor, gamma, threshold, layout, uniform, mosaic, mosaicSize, retroStrength } = state;
+  const retro = state.retro && !mosaic;   // mosaic takes precedence over the retro screen
+  const strength = retroStrength / 100;
+  const step = mosaic ? mosaicSize : spacing;
+  const rowStep = (layout === 'hex' && !mosaic) ? step * 0.866 : step;
+  const maxSize = mosaic ? mosaicSize : spacing * sizeFactor;
+  const dots = [];
+  let rows = 0, cols = 0;
+  state.grain = retro ? makeGrain(W, H, strength) : [];
+
+  const place = (x, y, row, col, iu, iv) => {
+    if(x < -step || x > W + step || y < -step || y > H + step) return;
+    const ink = rectAvg(x - step / 2, y - step / 2, x + step / 2, y + step / 2);
+    let v = (ink - threshold) / (1 - threshold);
+    if(v <= 0) return;
+    v = Math.pow(clamp(v, 0, 1), gamma);
+    let d, eff;
+    if(uniform){
+      // every drawn dot has exactly the same diameter; tone -> dot density
+      const bt = (BAYER8[(row % 8) * 8 + (col % 8)] + 0.5) / 64;
+      if(v <= bt) return;
+      d = maxSize;
+      eff = 1;
+    }else{
+      d = maxSize * v * (retro ? (1 + (hash2(iu, iv) - 0.5) * 0.24 * strength) : 1);
+      if(d < 0.35) return;
+      eff = v;
+    }
+    dots.push({ x: x, y: y, f: eff, d: d });
+  };
+
+  if(retro){
+    // classic 45-degree rotated halftone screen
+    const ca = Math.SQRT1_2, sa = Math.SQRT1_2;
+    const half = Math.ceil((Math.hypot(W, H) / 2 + spacing * 2) / spacing);
+    const ox = W / 2, oy = H / 2;
+    for(let iv = -half; iv <= half; iv++){
+      const v = iv * spacing;
+      for(let iu = -half; iu <= half; iu++){
+        const u = iu * spacing;
+        place(ox + u * ca - v * sa, oy + u * sa + v * ca, iv + half, iu + half, iu, iv);
+      }
+    }
+    rows = cols = half * 2 + 1;
+  }else{
+    for(let row = 0, cy = step / 2; cy < H + rowStep; row++, cy += rowStep){
+      rows++;
+      const offset = (layout === 'hex' && !mosaic && row % 2 === 1) ? step / 2 : 0;
+      let c = 0;
+      for(let cx = step / 2 + offset; cx < W + step; cx += step){
+        place(cx, cy, row, c, c, row);
+        c++;
+      }
+      cols = Math.max(cols, c);
+    }
+  }
+  return { dots: dots, rows: rows, cols: cols, maxSize: maxSize };
+}
+
+function drawGrain(ctx){
+  if(!state.grain || !state.grain.length) return;
+  const paths = [new Path2D(), new Path2D(), new Path2D(), new Path2D()];
+  for(const g of state.grain){
+    const b = clamp(Math.floor((g.a - 0.02) / 0.04), 0, 3);
+    paths[b].moveTo(g.x + g.r, g.y);
+    paths[b].arc(g.x, g.y, g.r, 0, Math.PI * 2);
+  }
+  for(let b = 0; b < 4; b++){
+    ctx.globalAlpha = 0.045 + b * 0.04;
+    ctx.fill(paths[b]);
+  }
+  ctx.globalAlpha = 1;
+}
+
+function renderTo(ctx, scale, dots, maxSize){
+  const W = state.W, H = state.H;
+  const shape = state.mosaic ? 'square' : (state.retro ? 'circle' : state.shape);
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  ctx.setTransform(scale, 0, 0, scale, 0, 0);
+  const bg = paperColor();
+  if(bg){
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+  }
+  ctx.fillStyle = '#000000';
+  ctx.strokeStyle = '#000000';
+  ctx.lineCap = 'round';
+
+  if(shape === 'custom' && state.stampSmall){
+    const s = state.stampSmall;
+    for(const p of dots) ctx.drawImage(s, p.x - p.d / 2, p.y - p.d / 2, p.d, p.d);
+  }else if(shape === 'cross'){
+    const buckets = [];
+    for(let i = 0; i < 10; i++) buckets.push(new Path2D());
+    const maxLw = Math.max(0.55, maxSize * 0.17);
+    for(const p of dots){
+      const b = Math.min(9, Math.floor(p.f * 10));
+      const r = p.d / 2, x = p.x, y = p.y, path = buckets[b];
+      path.moveTo(x - r, y - r); path.lineTo(x + r, y + r);
+      path.moveTo(x - r, y + r); path.lineTo(x + r, y - r);
+    }
+    for(let i = 0; i < 10; i++){
+      ctx.lineWidth = Math.max(0.45, maxLw * (i + 1) / 10);
+      ctx.stroke(buckets[i]);
+    }
+  }else{
+    const path = new Path2D();
+    for(const p of dots){
+      const r = p.d / 2, x = p.x, y = p.y;
+      if(r < 0.14) continue;
+      if(shape === 'circle'){
+        path.moveTo(x + r, y);
+        path.arc(x, y, r, 0, Math.PI * 2);
+      }else if(shape === 'square'){
+        path.rect(x - r, y - r, p.d, p.d);
+      }else if(shape === 'diamond'){
+        path.moveTo(x, y - r); path.lineTo(x + r, y);
+        path.lineTo(x, y + r); path.lineTo(x - r, y); path.closePath();
+      }
+    }
+    ctx.fill(path);
+  }
+  drawGrain(ctx);
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+}
+
+function buildSvg(dots, maxSize){
+  const W = state.W, H = state.H;
+  const shape = state.mosaic ? 'square' : (state.retro ? 'circle' : state.shape);
+  let s = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '">';
+  s += '<title>Dot Matrix Studio - pure black halftone</title>';
+  const bg = paperColor();
+  if(bg) s += '<rect x="0" y="0" width="' + W + '" height="' + H + '" fill="' + bg + '"/>';
+  if(shape === 'custom'){
+    s += '<defs><symbol id="dm-dot" viewBox="0 0 64 64"><path fill="#000000" d="' + state.stampPath + '"/></symbol></defs>';
+    for(const p of dots){
+      s += '<use href="#dm-dot" xlink:href="#dm-dot" x="' + f(p.x - p.d / 2) + '" y="' + f(p.y - p.d / 2) + '" width="' + f(p.d) + '" height="' + f(p.d) + '"/>';
+    }
+  }else if(shape === 'cross'){
+    const buckets = [];
+    for(let i = 0; i < 10; i++) buckets.push([]);
+    const maxLw = Math.max(0.55, maxSize * 0.17);
+    for(const p of dots){
+      const b = Math.min(9, Math.floor(p.f * 10));
+      const r = f(p.d / 2), x = p.x, y = p.y;
+      buckets[b].push('M' + f(x - r) + ' ' + f(y - r) + 'L' + f(x + r) + ' ' + f(y + r) +
+                      'M' + f(x - r) + ' ' + f(y + r) + 'L' + f(x + r) + ' ' + f(y - r));
+    }
+    for(let i = 0; i < 10; i++){
+      if(!buckets[i].length) continue;
+      s += '<path fill="none" stroke="#000000" stroke-width="' + f(Math.max(0.45, maxLw * (i + 1) / 10)) + '" stroke-linecap="round" d="' + buckets[i].join('') + '"/>';
+    }
+  }else{
+    let d = '';
+    for(const p of dots){
+      const r = p.d / 2, x = p.x, y = p.y;
+      if(r < 0.14) continue;
+      if(shape === 'circle'){
+        d += 'M' + f(x - r) + ' ' + f(y) + 'a' + f(r) + ' ' + f(r) + ' 0 1 0 ' + f(p.d) + ' 0a' + f(r) + ' ' + f(r) + ' 0 1 0 ' + f(-p.d) + ' 0z';
+      }else if(shape === 'square'){
+        d += 'M' + f(x - r) + ' ' + f(y - r) + 'h' + f(p.d) + 'v' + f(p.d) + 'h-' + f(p.d) + 'z';
+      }else{
+        d += 'M' + f(x) + ' ' + f(y - r) + 'L' + f(x + r) + ' ' + f(y) + 'L' + f(x) + ' ' + f(y + r) + 'L' + f(x - r) + ' ' + f(y) + 'z';
+      }
+    }
+    s += '<path fill="#000000" d="' + d + '"/>';
+  }
+  if(state.grain && state.grain.length){
+    let gd = '';
+    for(const g of state.grain){
+      gd += 'M' + f(g.x - g.r) + ' ' + f(g.y) +
+            'a' + f(g.r) + ' ' + f(g.r) + ' 0 1 0 ' + f(2 * g.r) + ' 0' +
+            'a' + f(g.r) + ' ' + f(g.r) + ' 0 1 0 ' + f(-2 * g.r) + ' 0z';
+    }
+    s += '<path fill="#000000" fill-opacity="0.075" d="' + gd + '"/>';
+  }
+  return s + '</svg>';
+}
+
+/* ---------------- update loop ---------------- */
+let needRebuild = false;
+function schedule(rebuild){
+  if(rebuild) needRebuild = true;
+  if(rafId) cancelAnimationFrame(rafId);
+  rafId = requestAnimationFrame(() => { rafId = 0; update(); });
+}
+function ensureFresh(){ update(); }
+function update(){
+  if(needRebuild){ needRebuild = false; rebuildInk(); }
+  if(!state.sat) return;
+  const t0 = performance.now();
+  const r = computeDots();
+  state.dots = r.dots;
+  renderTo(pctx, 1, r.dots, r.maxSize);
+  const ms = Math.round(performance.now() - t0);
+  $('stDots').textContent = r.dots.length.toLocaleString('en-US');
+  $('stDotsLabel').textContent = state.mosaic ? '像素块数量' : '点数量';
+  $('stGrid').textContent = r.cols + ' × ' + r.rows;
+  $('spacingRow').classList.toggle('dim', state.mosaic);
+  $('sizeRow').classList.toggle('dim', state.mosaic);
+  $('stPng').textContent = (state.W * state.exportScale) + ' × ' + (state.H * state.exportScale);
+  $('stTime').textContent = ms + ' ms';
+  $('barInfo').textContent = (state.mosaic ? '纯黑马赛克' : '纯黑点阵') +
+                             ' · ' + (state.background === 'white' ? (state.retro && !state.mosaic ? '复古旧纸' : '白底') : '透明底') +
+                             ' · ' + (state.uniform ? '统一尺寸' : '渐变尺寸') +
+                             (state.mosaic ? ' · 像素块 ' + state.mosaicSize + 'px' : '') +
+                             (state.retro && !state.mosaic ? ' · 复古 45° 网屏' : '') +
+                             (state.blur > 0 ? ' · 模糊 ' + state.blur + 'px / 留边 ' + state.pad + 'px' : '') +
+                             ' · ' + state.W + ' × ' + state.H;
+  $('paper').classList.toggle('transparent', state.background === 'transparent');
+  queueSave();            // every parameter change is persisted (debounced)
+}
+
+/* ---------------- export ---------------- */
+function download(blob, filename){
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 4000);
+}
+function exportPng(){
+  ensureFresh();
+  if(!state.sat) return;
+  const k = state.exportScale;
+  const c = document.createElement('canvas');
+  c.width = state.W * k; c.height = state.H * k;
+  renderTo(c.getContext('2d'), k, state.dots, state.mosaic ? state.mosaicSize : state.spacing * state.sizeFactor);
+  c.toBlob(blob => {
+    if(!blob){ toast('PNG 生成失败'); return; }
+    download(blob, state.name + '-点阵图-' + k + 'x.png');
+    toast('PNG 已下载 · ' + c.width + ' × ' + c.height);
+  }, 'image/png');
+}
+function exportSvg(){
+  ensureFresh();
+  if(!state.sat) return;
+  const svg = buildSvg(state.dots, state.mosaic ? state.mosaicSize : state.spacing * state.sizeFactor);
+  download(new Blob([svg], { type: 'image/svg+xml;charset=utf-8' }), state.name + '-点阵图.svg');
+  toast('SVG 已下载 · ' + (svg.length / 1024).toFixed(0) + ' KB · ' + state.dots.length.toLocaleString('en-US') + ' 个点');
+}
+
+/* ---------------- ZIP writer (store mode, zero dependency) ---------------- */
+const CRC_TABLE = (function(){
+  const t = new Uint32Array(256);
+  for(let i = 0; i < 256; i++){
+    let c = i;
+    for(let k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+    t[i] = c >>> 0;
+  }
+  return t;
+})();
+function crc32(u8){
+  let c = 0xFFFFFFFF;
+  for(let i = 0; i < u8.length; i++) c = CRC_TABLE[(c ^ u8[i]) & 0xFF] ^ (c >>> 8);
+  return (c ^ 0xFFFFFFFF) >>> 0;
+}
+function makeZip(entries){
+  const enc = new TextEncoder();
+  const now = new Date();
+  const dt = ((now.getHours() << 11) | (now.getMinutes() << 5) | (now.getSeconds() >> 1)) & 0xFFFF;
+  const dd = (((now.getFullYear() - 1980) << 9) | ((now.getMonth() + 1) << 5) | now.getDate()) & 0xFFFF;
+  const locals = [], centrals = [];
+  let offset = 0;
+  for(const e of entries){
+    const name = enc.encode(e.name);
+    const data = e.data;
+    const crc = crc32(data);
+    const lh = new Uint8Array(30 + name.length);
+    const lv = new DataView(lh.buffer);
+    lv.setUint32(0, 0x04034B50, true);
+    lv.setUint16(4, 20, true);
+    lv.setUint16(6, 0x0800, true);   // UTF-8 filenames
+    lv.setUint16(8, 0, true);        // stored, no compression
+    lv.setUint16(10, dt, true);
+    lv.setUint16(12, dd, true);
+    lv.setUint32(14, crc, true);
+    lv.setUint32(18, data.length, true);
+    lv.setUint32(22, data.length, true);
+    lv.setUint16(26, name.length, true);
+    lh.set(name, 30);
+    locals.push(lh, data);
+
+    const ch = new Uint8Array(46 + name.length);
+    const cv = new DataView(ch.buffer);
+    cv.setUint32(0, 0x02014B50, true);
+    cv.setUint16(4, 20, true);
+    cv.setUint16(6, 20, true);
+    cv.setUint16(8, 0x0800, true);
+    cv.setUint16(10, 0, true);
+    cv.setUint16(12, dt, true);
+    cv.setUint16(14, dd, true);
+    cv.setUint32(16, crc, true);
+    cv.setUint32(20, data.length, true);
+    cv.setUint32(24, data.length, true);
+    cv.setUint16(28, name.length, true);
+    cv.setUint32(42, offset, true);
+    ch.set(name, 46);
+    centrals.push(ch);
+    offset += lh.length + data.length;
+  }
+  const cdSize = centrals.reduce((a, b) => a + b.length, 0);
+  const end = new Uint8Array(22);
+  const ev = new DataView(end.buffer);
+  ev.setUint32(0, 0x06054B50, true);
+  ev.setUint16(8, entries.length, true);
+  ev.setUint16(10, entries.length, true);
+  ev.setUint32(12, cdSize, true);
+  ev.setUint32(16, offset, true);
+  return new Blob([].concat(locals, centrals, [end]), { type: 'application/zip' });
+}
+
+/* ---------------- batch queue ---------------- */
+const batch = [];
+function renderBatch(){
+  const box = $('batchList');
+  box.innerHTML = '';
+  if(!batch.length){
+    const sp = document.createElement('span');
+    sp.className = 'batch-empty';
+    sp.textContent = '尚未添加图片 · 可多选或一次拖入多张';
+    box.appendChild(sp);
+  }
+  batch.forEach((it, i) => {
+    const row = document.createElement('div');
+    row.className = 'batch-item';
+    const name = document.createElement('button');
+    name.className = 'batch-name';
+    name.textContent = (i + 1) + '. ' + it.name;
+    name.title = '点击载入为主图预览';
+    name.addEventListener('click', () => loadBatchItem(i));
+    const del = document.createElement('button');
+    del.className = 'batch-del';
+    del.textContent = '×';
+    del.title = '移除';
+    del.addEventListener('click', () => { batch.splice(i, 1); renderBatch(); });
+    row.appendChild(name); row.appendChild(del);
+    box.appendChild(row);
+  });
+  $('batchCount').textContent = batch.length ? batch.length + ' 张' : '';
+  $('btnBatchZip').disabled = batch.length === 0;
+}
+function addBatchFiles(files){
+  let n = 0;
+  for(const file of files){
+    if(isImageFile(file)){ batch.push({ file: file, name: file.name.replace(/\.[^.]+$/, '') }); n++; }
+  }
+  renderBatch();
+  toast(n ? '已加入 ' + n + ' 张，队列共 ' + batch.length + ' 张' : '没有可识别的图片文件');
+}
+async function loadBatchItem(i){
+  if(!batch[i]) return;
+  try{
+    const r = await fileToImage(batch[i].file);
+    setSource(r.img, r.name, r.forced);
+    toast('已载入 ' + batch[i].name + '，可继续调整效果');
+  }catch(err){ toast('图片载入失败'); }
+}
+function batchSnapshot(){
+  return {
+    blur: state.blur, spacing: state.spacing, sizeFactor: state.sizeFactor,
+    uniform: state.uniform, gamma: state.gamma, threshold: state.threshold,
+    layout: state.layout, background: state.background, exportScale: state.exportScale,
+    shape: state.shape, retro: state.retro, retroStrength: state.retroStrength,
+    mosaic: state.mosaic, mosaicSize: state.mosaicSize,
+    stampSmall: state.stampSmall, stampPath: state.stampPath
+  };
+}
+function uniqueName(name, used){
+  let n = name, i = 2;
+  while(used.has(n)) n = name + '-' + (i++);
+  used.add(n);
+  return n;
+}
+async function batchZip(){
+  if(!batch.length){ toast('请先添加图片'); return; }
+  const wantPng = $('chkBatchPng').checked, wantSvg = $('chkBatchSvg').checked;
+  if(!wantPng && !wantSvg){ toast('至少勾选一种导出格式'); return; }
+  ensureFresh();
+  const btn = $('btnBatchZip');
+  btn.disabled = true;
+  const cfg = batchSnapshot();
+  const saved = {
+    W: state.W, H: state.H, sat: state.sat, name: state.name,
+    srcCanvas: state.srcCanvas, baseCanvas: state.baseCanvas,
+    baseW: state.baseW, baseH: state.baseH, pad: state.pad,
+    grain: state.grain, dots: state.dots
+  };
+  const entries = [], used = new Set();
+  let ok = 0, fail = 0;
+  try{
+    for(let i = 0; i < batch.length; i++){
+      btn.textContent = '处理中 ' + (i + 1) + ' / ' + batch.length;
+      await new Promise(r => requestAnimationFrame(r));
+      try{
+        const r = await fileToImage(batch[i].file);
+        const p = prepareImage(r.img, r.forced);
+        state.baseCanvas = p.src; state.baseW = p.W; state.baseH = p.H;
+        state.name = r.name;
+        Object.assign(state, cfg);
+        rebuildInk();
+        const res = computeDots();
+        const base = uniqueName(r.name, used);
+        if(wantSvg){
+          entries.push({ name: base + '.svg', data: new TextEncoder().encode(buildSvg(res.dots, res.maxSize)) });
+        }
+        if(wantPng){
+          const k = state.exportScale;
+          const c = document.createElement('canvas');
+          c.width = state.W * k; c.height = state.H * k;
+          renderTo(c.getContext('2d'), k, res.dots, res.maxSize);
+          const blob = await new Promise(r2 => c.toBlob(r2, 'image/png'));
+          if(!blob) throw new Error('PNG 生成失败');
+          entries.push({ name: base + '.png', data: new Uint8Array(await blob.arrayBuffer()) });
+        }
+        ok++;
+      }catch(err){ fail++; }
+    }
+    if(!entries.length) throw new Error('没有生成任何文件');
+    const zip = makeZip(entries);
+    download(zip, '点阵图-批量-' + ok + '张.zip');
+    toast('已打包 ' + entries.length + ' 个文件' + (fail ? '，' + fail + ' 张失败' : '') +
+          ' · ' + (zip.size / 1048576).toFixed(1) + ' MB');
+  }catch(err){ toast(err.message || '批量生成失败'); }
+  finally{
+    Object.assign(state, saved);
+    preview.width = state.W; preview.height = state.H;
+    updateSrcSize(); fitPaper();
+    btn.disabled = false;
+    btn.textContent = '打包下载 ZIP';
+    schedule();
+  }
+}
+
+/* ---------------- UI binding ---------------- */
+function paintRange(el){
+  const p = (el.value - el.min) / (el.max - el.min) * 100;
+  el.style.setProperty('--p', p + '%');
+}
+function bindRange(id, out, apply, fmtFn, rebuild){
+  const el = $(id);
+  el.addEventListener('input', () => {
+    apply(parseFloat(el.value));
+    $(out).textContent = fmtFn(parseFloat(el.value));
+    paintRange(el);
+    schedule(!!rebuild);
+  });
+  paintRange(el);
+  return el;
+}
+const ranges = {
+  blur: bindRange('rBlur', 'oBlur', v => state.blur = v, v => v + ' px', true),
+  mosaic: bindRange('rMosaic', 'oMosaic', v => state.mosaicSize = v, v => v + ' px'),
+  spacing: bindRange('rSpacing', 'oSpacing', v => state.spacing = v, v => v + ' px'),
+  size: bindRange('rSize', 'oSize', v => state.sizeFactor = v / 100, v => v + '%'),
+  gamma: bindRange('rGamma', 'oGamma', v => state.gamma = v, v => v.toFixed(2)),
+  threshold: bindRange('rThreshold', 'oThreshold', v => state.threshold = v / 100, v => v + '%'),
+  retro: bindRange('rRetro', 'oRetro', v => state.retroStrength = v, v => v + '%')
+};
+
+$('shapeGrid').addEventListener('click', e => {
+  const btn = e.target.closest('.shape');
+  if(!btn) return;
+  document.querySelectorAll('.shape').forEach(b => b.classList.toggle('active', b === btn));
+  state.shape = btn.dataset.shape;
+  if(state.mosaic) toast('当前为马赛克模式，关闭后点形状才会生效');
+  if(state.shape === 'custom' && !state.stampSmall) $('fileStamp').click();
+  schedule();
+});
+$('chkUniform').addEventListener('change', e => {
+  state.uniform = e.target.checked;
+  $('uniformRow').classList.toggle('on', state.uniform);
+  schedule();
+});
+$('chkMosaic').addEventListener('change', e => {
+  state.mosaic = e.target.checked;
+  $('mosaicRow').classList.toggle('on', state.mosaic);
+  if(state.mosaic && state.retro){
+    state.retro = false;
+    $('chkRetro').checked = false;
+    $('retroRow').classList.remove('on');
+    $('retroExtra').classList.remove('show');
+  }
+  schedule();
+});
+$('chkRetro').addEventListener('change', e => {
+  state.retro = e.target.checked;
+  $('retroRow').classList.toggle('on', state.retro);
+  $('retroExtra').classList.toggle('show', state.retro);
+  if(state.retro && state.mosaic){
+    state.mosaic = false;
+    $('chkMosaic').checked = false;
+    $('mosaicRow').classList.remove('on');
+  }
+  schedule();
+});
+$('btnTip').addEventListener('click', () => toast('所有图片均在本地浏览器中处理，不会上传到任何服务器'));
+$('selLayout').addEventListener('change', e => { state.layout = e.target.value; schedule(); });
+$('selBg').addEventListener('change', e => { state.background = e.target.value; schedule(); });
+$('selScale').addEventListener('change', e => {
+  state.exportScale = parseInt(e.target.value, 10);
+  $('stPng').textContent = (state.W * state.exportScale) + ' × ' + (state.H * state.exportScale);
+  queueSave();
+});
+
+$('btnReset').addEventListener('click', () => {
+  const defs = { spacing: 12, size: 100, gamma: 1, threshold: 2, blur: 0, retro: 50, mosaic: 16 };
+  for(const key in defs){ ranges[key].value = defs[key]; ranges[key].dispatchEvent(new Event('input')); }
+  $('selLayout').value = 'grid'; state.layout = 'grid';
+  $('selBg').value = 'white'; state.background = 'white';
+  $('chkUniform').checked = false; state.uniform = false;
+  $('uniformRow').classList.remove('on');
+  $('chkRetro').checked = false; state.retro = false;
+  $('retroRow').classList.remove('on');
+  $('retroExtra').classList.remove('show');
+  $('chkMosaic').checked = false; state.mosaic = false;
+  $('mosaicRow').classList.remove('on');
+  toast('参数已恢复默认');
+  schedule(true);
+});
+
+$('dropMain').addEventListener('click', () => $('fileMain').click());
+$('fileMain').addEventListener('change', e => { if(e.target.files[0]) handleSourceFile(e.target.files[0]); e.target.value = ''; });
+$('btnDemo').addEventListener('click', () => { setSource(makeDemo(), '示例图形'); toast('已载入示例图形'); });
+$('btnUploadStamp').addEventListener('click', () => $('fileStamp').click());
+$('fileStamp').addEventListener('change', e => { if(e.target.files[0]) handleStampFile(e.target.files[0]); e.target.value = ''; });
+$('btnResetStamp').addEventListener('click', () => {
+  applyStamp(defaultStamp(), false);
+  state.stampCustom = false;
+  queueSave();
+  toast('已恢复默认星形点');
+});
+$('btnBatchAdd').addEventListener('click', () => $('fileBatch').click());
+$('fileBatch').addEventListener('change', e => { addBatchFiles(e.target.files); e.target.value = ''; });
+$('btnBatchClear').addEventListener('click', () => { batch.length = 0; renderBatch(); toast('批量队列已清空'); });
+$('btnBatchZip').addEventListener('click', batchZip);
+
+/* ---------------- config persistence ---------------- */
+function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ storageOK = false; return null; } }
+function lsSet(k, v){ try{ localStorage.setItem(k, v); }catch(e){ storageOK = false; } }
+function lsDel(k){ try{ localStorage.removeItem(k); }catch(e){} }
+function autoSaveOn(){ return $('chkAutoSave').checked; }
+function cfgStatus(txt){ $('cfgStatus').textContent = storageOK ? txt : '浏览器限制 · 仅本次有效'; }
+
+function configObject(){
+  const params = {};
+  CFG_FIELDS.forEach(k => params[k] = state[k]);
+  let stampData = null;
+  if(state.stampCustom && state.stampPath && state.stampSmall && state.stampSmall.toDataURL){
+    try{ stampData = { path: state.stampPath, data: state.stampSmall.toDataURL('image/png') }; }catch(e){}
+  }
+  return { app: 'DotMatrixStudio', version: 1, savedAt: new Date().toISOString(),
+           params: params, stamp: stampData };
+}
+function saveConfig(){
+  if(!autoSaveOn()) return;
+  lsSet(CFG_KEY, JSON.stringify(configObject()));
+  cfgStatus('已记忆');
+}
+function queueSave(){
+  if(!autoSaveOn()) return;
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveConfig, 400);
+}
+function numIn(v, def, min, max){
+  const n = Number(v);
+  return isFinite(n) ? clamp(n, min, max) : def;
+}
+function syncConfigUI(){
+  const vals = {
+    blur: state.blur, mosaic: state.mosaicSize, spacing: state.spacing,
+    size: Math.round(state.sizeFactor * 100), gamma: state.gamma,
+    threshold: Math.round(state.threshold * 100), retro: state.retroStrength
+  };
+  for(const k in vals){ ranges[k].value = vals[k]; paintRange(ranges[k]); }
+  $('oBlur').textContent = state.blur + ' px';
+  $('oMosaic').textContent = state.mosaicSize + ' px';
+  $('oSpacing').textContent = state.spacing + ' px';
+  $('oSize').textContent = Math.round(state.sizeFactor * 100) + '%';
+  $('oGamma').textContent = state.gamma.toFixed(2);
+  $('oThreshold').textContent = Math.round(state.threshold * 100) + '%';
+  $('oRetro').textContent = state.retroStrength + '%';
+  document.querySelectorAll('.shape').forEach(b => b.classList.toggle('active', b.dataset.shape === state.shape));
+  const sw = (id, row, on) => { $(id).checked = on; $(row).classList.toggle('on', on); };
+  sw('chkUniform', 'uniformRow', state.uniform);
+  sw('chkMosaic', 'mosaicRow', state.mosaic);
+  sw('chkRetro', 'retroRow', state.retro);
+  $('retroExtra').classList.toggle('show', state.retro);
+  $('selLayout').value = state.layout;
+  $('selBg').value = state.background;
+  $('selScale').value = String(state.exportScale);
+}
+function applyConfig(cfg){
+  if(!cfg || typeof cfg !== 'object' || !cfg.params || typeof cfg.params !== 'object'){
+    throw new Error('不是有效的配置文件');
+  }
+  const p = cfg.params;
+  const shapes = ['circle','square','diamond','cross','custom'];
+  state.shape = shapes.indexOf(p.shape) >= 0 ? p.shape : 'circle';
+  state.spacing = Math.round(numIn(p.spacing, 12, 4, 60));
+  state.sizeFactor = f(Math.round(numIn(p.sizeFactor, 1, 0.1, 1.6) * 20) / 20);
+  state.gamma = f(Math.round(numIn(p.gamma, 1, 0.4, 2.5) / 0.05) * 0.05);
+  state.threshold = f(Math.round(numIn(p.threshold, 0.02, 0, 0.3) * 100) / 100);
+  state.blur = f(Math.round(numIn(p.blur, 0, 0, 20) / 0.5) * 0.5);
+  state.mosaicSize = Math.round(numIn(p.mosaicSize, 16, 1, 100));
+  state.retroStrength = Math.round(numIn(p.retroStrength, 50, 0, 100) / 5) * 5;
+  state.uniform = !!p.uniform;
+  state.mosaic = !!p.mosaic;
+  state.retro = !!p.retro && !state.mosaic;
+  state.layout = p.layout === 'hex' ? 'hex' : 'grid';
+  state.background = p.background === 'transparent' ? 'transparent' : 'white';
+  const k = parseInt(p.exportScale, 10);
+  state.exportScale = (k >= 1 && k <= 4) ? k : 2;
+  syncConfigUI();
+  if(cfg.stamp && cfg.stamp.path && cfg.stamp.data){
+    loadImage(cfg.stamp.data).then(img => {
+      const small = document.createElement('canvas');
+      small.width = 48; small.height = 48;
+      small.getContext('2d').drawImage(img, 0, 0, 48, 48);
+      applyStamp({ hi: img, small: small, path: cfg.stamp.path }, false);
+      state.stampCustom = true;
+      schedule();
+    }).catch(() => {});
+  }else{
+    state.stampCustom = false;
+  }
+  schedule(true);
+}
+function initConfig(){
+  const on = lsGet(AUTO_KEY) !== '0';
+  $('chkAutoSave').checked = on;
+  $('autoSaveRow').classList.toggle('on', on);
+  const raw = lsGet(CFG_KEY);
+  if(raw && on){
+    try{ applyConfig(JSON.parse(raw)); cfgStatus('已恢复上次参数'); }
+    catch(e){ cfgStatus('配置无效 · 已用默认值'); }
+  }else{
+    cfgStatus(on ? '尚未记录' : '未开启');
+  }
+  if(!storageOK) cfgStatus('浏览器限制 · 仅本次有效');
+}
+function exportConfig(){
+  const text = JSON.stringify(configObject(), null, 2);
+  const d = new Date(), pad = n => String(n).padStart(2, '0');
+  const name = '点阵工坊-配置-' + d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) +
+               '-' + pad(d.getHours()) + pad(d.getMinutes()) + '.json';
+  download(new Blob([text], { type: 'application/json;charset=utf-8' }), name);
+  toast('配置已导出 · ' + CFG_FIELDS.length + ' 项参数');
+}
+async function importConfig(file){
+  try{
+    const cfg = JSON.parse(await readAsText(file));
+    applyConfig(cfg);
+    if(autoSaveOn()) saveConfig();
+    cfgStatus('已导入配置');
+    toast('配置已导入并应用');
+  }catch(e){ toast('导入失败：' + e.message); }
+}
+
+$('chkAutoSave').addEventListener('change', e => {
+  const on = e.target.checked;
+  $('autoSaveRow').classList.toggle('on', on);
+  lsSet(AUTO_KEY, on ? '1' : '0');
+  if(on){ saveConfig(); toast('已开启自动记忆'); }
+  else{ lsDel(CFG_KEY); cfgStatus('未开启'); toast('已关闭自动记忆，并清除本机记录'); }
+});
+$('btnCfgExport').addEventListener('click', exportConfig);
+$('btnCfgImport').addEventListener('click', () => $('fileCfg').click());
+$('fileCfg').addEventListener('change', e => { if(e.target.files[0]) importConfig(e.target.files[0]); e.target.value = ''; });
+
+function handleDropFiles(files){
+  const arr = Array.from(files || []).filter(isImageFile);
+  if(!arr.length){ toast('没有可识别的图片'); return; }
+  if(arr.length === 1) handleSourceFile(arr[0]);
+  else addBatchFiles(arr);
+}
+const wrap = $('canvasWrap');
+['dragenter', 'dragover'].forEach(t => wrap.addEventListener(t, e => { e.preventDefault(); wrap.classList.add('dragover'); }));
+['dragleave', 'drop'].forEach(t => wrap.addEventListener(t, e => {
+  e.preventDefault();
+  if(t === 'dragleave' && wrap.contains(e.relatedTarget)) return;
+  wrap.classList.remove('dragover');
+}));
+wrap.addEventListener('drop', e => { handleDropFiles(e.dataTransfer && e.dataTransfer.files); });
+
+/* ---- zoom: mouse wheel, pinch gesture, drag to pan, buttons ---- */
+wrap.addEventListener('wheel', e => {
+  e.preventDefault();
+  const rect = wrap.getBoundingClientRect();
+  const mx = e.clientX - rect.left - rect.width / 2;
+  const my = e.clientY - rect.top - rect.height / 2;
+  const unit = e.deltaMode === 1 ? 16 : (e.deltaMode === 2 ? rect.height : 1);
+  const dy = clamp(e.deltaY * unit, -240, 240);
+  zoomAt(view.zoom * Math.exp(-dy * 0.0016), mx, my);
+}, { passive:false });
+
+const pointers = new Map();
+let panStart = null, pinch = null;
+
+wrap.addEventListener('pointerdown', e => {
+  if(e.pointerType === 'mouse' && e.button !== 0) return;
+  pointers.set(e.pointerId, { x:e.clientX, y:e.clientY });
+  try{ wrap.setPointerCapture(e.pointerId); }catch(err){}
+  if(pointers.size === 1 && !pinch){
+    panStart = { x:e.clientX, y:e.clientY, px:view.panX, py:view.panY };
+    wrap.classList.add('dragging');
+  }else panStart = null;
+});
+wrap.addEventListener('pointermove', e => {
+  if(!pointers.has(e.pointerId)) return;
+  pointers.set(e.pointerId, { x:e.clientX, y:e.clientY });
+  if(pinch || pointers.size > 1 || !panStart) return;
+  view.panX = panStart.px + (e.clientX - panStart.x);
+  view.panY = panStart.py + (e.clientY - panStart.y);
+  clampPan();
+  applyView();
+});
+function endPointer(e){
+  pointers.delete(e.pointerId);
+  if(!pointers.size){ panStart = null; wrap.classList.remove('dragging'); }
+}
+['pointerup', 'pointercancel', 'pointerleave'].forEach(t => wrap.addEventListener(t, endPointer));
+
+function touchCenter(t, rect){
+  return {
+    x:(t[0].clientX + t[1].clientX) / 2 - rect.left - rect.width / 2,
+    y:(t[0].clientY + t[1].clientY) / 2 - rect.top - rect.height / 2
+  };
+}
+wrap.addEventListener('touchstart', e => {
+  if(e.touches.length === 2){
+    const rect = wrap.getBoundingClientRect();
+    const c = touchCenter(e.touches, rect);
+    pinch = {
+      d: Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY),
+      z: view.zoom, cx:c.x, cy:c.y, px:view.panX, py:view.panY
+    };
+    panStart = null;
+    wrap.classList.remove('dragging');
+    e.preventDefault();
+  }
+}, { passive:false });
+wrap.addEventListener('touchmove', e => {
+  if(e.touches.length !== 2 || !pinch) return;
+  e.preventDefault();
+  const rect = wrap.getBoundingClientRect();
+  const c = touchCenter(e.touches, rect);
+  const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+  const z = clamp(pinch.z * (d / Math.max(1, pinch.d)), MIN_ZOOM, MAX_ZOOM);
+  const k = z / pinch.z;
+  view.zoom = z;
+  view.panX = c.x - k * (pinch.cx - pinch.px);
+  view.panY = c.y - k * (pinch.cy - pinch.py);
+  clampPan();
+  applyView();
+}, { passive:false });
+wrap.addEventListener('touchend', e => { if(e.touches.length < 2){ pinch = null; panStart = null; } });
+wrap.addEventListener('touchcancel', e => { if(e.touches.length < 2){ pinch = null; panStart = null; } });
+
+wrap.addEventListener('dblclick', resetView);
+$('btnZoomIn').addEventListener('click', () => zoomAt(view.zoom * 1.25, 0, 0));
+$('btnZoomOut').addEventListener('click', () => zoomAt(view.zoom / 1.25, 0, 0));
+$('btnZoomFit').addEventListener('click', resetView);
+
+const dz = $('dropMain');
+['dragenter', 'dragover'].forEach(t => dz.addEventListener(t, e => { e.preventDefault(); dz.classList.add('hover'); }));
+['dragleave', 'drop'].forEach(t => dz.addEventListener(t, e => { e.preventDefault(); dz.classList.remove('hover'); }));
+dz.addEventListener('drop', e => { handleDropFiles(e.dataTransfer && e.dataTransfer.files); });
+document.addEventListener('paste', e => {
+  const items = e.clipboardData && e.clipboardData.items;
+  if(!items) return;
+  for(const it of items){
+    if(it.type && it.type.indexOf('image') === 0){
+      const file = it.getAsFile();
+      if(file){ handleSourceFile(file); break; }
+    }
+  }
+});
+$('btnPng').addEventListener('click', exportPng);
+$('btnSvg').addEventListener('click', exportSvg);
+
+/* ---------------- boot ---------------- */
+window.addEventListener('resize', fitPaper);
+window.addEventListener('load', fitPaper);
+applyStamp(defaultStamp(), false);
+renderBatch();
+setSource(makeDemo(), '示例图形');
+initConfig();
+setTimeout(fitPaper, 0);
+
+})();
+</script>
+
+
+</body></html>
